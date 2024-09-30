@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jaco</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        @font-face {
+            font-family: "JacoMaru";
+            src: url("https://hajaulee.github.io/Houf-Jaco-Maru/new_fonts/ttf/HoufJacoMaru-Regular.ttf");
+        }
+
+        .input-text {
+            outline: 0;
+            width: 100%;
+            min-height: 300px;
+            max-width: 600px;
+            height: calc(100% - 60px);
+            border-radius: 7px;
+            padding: 1em;
+            margin: 1em;
+            font-size: 16px;
+        }
+
+        .center {
+            display: flex;
+            justify-content: center;
+        }
+
+        #Jaco>* {
+            font-family: 'JacoMaru', Courier, monospace !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="w3-container">
+        <div class="w3-bar w3-black">
+            <button class="w3-bar-item w3-button tablink w3-red" onclick="openTab(event,'Viet')">Tiếng Việt</button>
+            <button class="w3-bar-item w3-button tablink" onclick="openTab(event,'Jaco')">Jaco</button>
+        </div>
+
+        <div id="Viet" class="w3-container w3-border tab-content w3-animate-left">
+            <div class="center">
+                <textarea id="textInput" class="input-text" placeholder="Nhập văn bản ở đây!"></textarea>
+            </div>
+        </div>
+
+        <div id="Jaco" class="w3-container w3-border tab-content w3-animate-right" style="display:none">
+            <div id="textOutput">Hello</div>
+        </div>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, x, tablinks;
+            x = document.getElementsByClassName("tab-content");
+            for (i = 0; i < x.length; i++) {
+                x[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablink");
+            for (i = 0; i < x.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" w3-red", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " w3-red";
+        }
+    </script>
+    <script>
+
+        class Converter {
+
+            constructor() {
+                this.cache = {};
+                this.code_map = {};
+
+                this.ready = new Promise((resolve, reject) => {
+                    fetch("./code_map.json")
+                    .then(res => res.text())
+                    .then(res => {
+                        this.code_map = JSON.parse(res);
+                        resolve(true);
+                    })
+                });
+                
+                this.paChars = [
+                    "q", "r", "t", "p",
+                    "s", "d", "đ", "g", "h", "k", "l",
+                    "z", "x", "c", "v", "b", "n", "m"
+                ];
+                this.pdAlternativeMap = {
+                    "": "-",
+                    "k": "c",
+                    "gh": "g",
+                    "ngh": "ng",
+                    "đ": "dd"
+                }
+
+                this.pcTac = ['c', 'ch',  't', 'p'];
+
+
+
+                this.dauThanhData = {
+                    "f": "àằầìùừèềòồờỳ",
+                    "s": "áắấíúứéếóốớý",
+                    "r": "ảẳẩỉủửẻểỏổởỷ",
+                    "x": "ãẵẫĩũữẽễõỗỡỹ",
+                    "j": "ạặậịụựẹệọộợỵ"
+                }
+                this.dauThanhMap = {};
+                for (const [dauThanh, mangNguyenAm] of Object.entries(this.dauThanhData)) {
+                    for (const c of mangNguyenAm) {
+                        this.dauThanhMap[c] = dauThanh;
+                    }
+                }
+
+                this.khongDauthanhData = {
+                    "àằầìùừèềòồờỳ": "aăâiuưeêoôơy",
+                    "áắấíúứéếóốớý": "aăâiuưeêoôơy",
+                    "ảẳẩỉủửẻểỏổởỷ": "aăâiuưeêoôơy",
+                    "ãẵẫĩũữẽễõỗỡỹ": "aăâiuưeêoôơy",
+                    "ạặậịụựẹệọộợỵ": "aăâiuưeêoôơy"
+                };
+
+                this.khongDauthanhMap = {};
+                for (const [coDau, khongDau] of Object.entries(this.khongDauthanhData)) {
+                    for (let i = 0; i < coDau.length; i++) {
+                        this.khongDauthanhMap[coDau[i]] = khongDau[i];
+                    }
+                }
+
+                this.telexMap = {
+                    "ă": "aw",
+                    "â": "aa",
+                    "ư": "uw",
+                    "ê": "ee",
+                    "ô": "oo",
+                    "ơ": "ow"
+                }
+            }
+
+
+
+            convert(text) {
+                const words = this.splitWords(text);
+                let convertedText = "";
+                words.forEach(word => {
+                    const convertedWord = this.convertWord(word);
+                    const notChanged = convertedWord == word.toLowerCase();
+                    const isAlphabet = word.split('').every(char => /[a-z]/i.test(char));
+                    if (notChanged && isAlphabet) {
+                        if (convertedText[convertedText.length - 1] != ' ') {
+                            convertedText += ' ';
+                        }
+                        convertedText += convertedWord + ' ';
+                    } else if (convertedWord != ' ') {
+                        convertedText += convertedWord;
+                    }
+                    // convertedText += '/'
+                })
+                return convertedText;
+            }
+
+            convertWord(word) {
+                word = word.toLowerCase();
+                if (this.cache[word]) {
+                    return this.cache[word]
+                }
+
+                let pd = "";
+                let va = "";
+                let dt = "";
+                let pc = "";
+
+                for (let char of word) {
+                    if (this.paChars.includes(char)) {
+                        if (va == "") {
+                            pd += char;
+                        } else {
+                            pc += char;
+                        }
+                    } else if (pc == '') {
+                        if (this.dauThanhMap[char]) {
+                            dt = this.dauThanhMap[char];
+                            char = this.khongDauthanhMap[char];
+                        }
+                        va += char;
+                    }
+                }
+
+                // Not vietnamese
+                if (`${pd}${va}${pc}`.length < word.length || va.trim() == ''){
+                    return word
+                }
+
+                // pd
+                pd = this.pdAlternativeMap[pd] ?? pd;
+                if (pd == 'q' && va[0] == 'u'){
+                    pd = 'qu';
+                    va = va.slice(1)
+                }
+
+                // va
+                if (va == 'o' && pc =='ng'){
+                    pc = 'nh';
+                } else if (va == 'oo' && pc == 'ng'){
+                    va = 'o';
+                }
+                va = va.split('').map(char => this.telexMap[char] ?? char).join('');
+
+                // dt
+                if (dt == 's' && this.pcTac.includes(pc)){
+                    dt = '';
+                }
+                
+                const char_code = this.code_map[`${pd}_${va}_${pc}_${dt}`]
+                
+                return char_code ? `&#${char_code};` : word;
+            }
+
+            splitWords(text) {
+                let words = [];
+                let currentWord = "";
+                let isPreviousCharAlphabet = false;
+
+                for (let char of text) {
+                    // Using \p{L} to match any kind of letter from any language
+                    let isCurrentCharAlphabet = /\p{L}/u.test(char) || char === '_';
+                    if (isCurrentCharAlphabet === isPreviousCharAlphabet) {
+                        currentWord += char;
+                    } else {
+                        if (currentWord) {
+                            words.push(currentWord);
+                        }
+                        currentWord = char;
+                    }
+                    isPreviousCharAlphabet = isCurrentCharAlphabet;
+                }
+                if (currentWord) {
+                    words.push(currentWord);
+                }
+
+                return words;
+            }
+        }
+
+        const conveter = new Converter();
+        const textInput = document.getElementById("textInput");
+        const textOutput = document.getElementById("textOutput");
+
+        function convertInput() {
+            textOutput.innerHTML = conveter.convert(textInput.value).replace(/\n/g, '<br>');
+        }
+
+        textInput.addEventListener('keyup', () => convertInput());
+        textInput.addEventListener('change', () => convertInput());
+        conveter.ready.then(() => {
+            textInput.value = 'Xin chào 越南 from Z.'
+            convertInput()
+        });
+    </script>
+</body>
+
+</html>
