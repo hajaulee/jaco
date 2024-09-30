@@ -251,13 +251,14 @@
         const textOutput = document.getElementById("textOutput");
 
         function convertInput() {
+            localStorage.setItem('inputText', textInput.value);
             textOutput.innerHTML = conveter.convert(textInput.value).replace(/\n/g, '<br>');
         }
 
         textInput.addEventListener('keyup', () => convertInput());
         textInput.addEventListener('change', () => convertInput());
         conveter.ready.then(() => {
-            textInput.value = 'Xin chào 越南 from Z.'
+            textInput.value = localStorage.getItem('inputText') || 'Xin chào 越南 from Z。'
             convertInput()
         });
     </script>
