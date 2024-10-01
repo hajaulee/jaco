@@ -200,6 +200,19 @@
                 if (pd == 'q' && va[0] == 'u'){
                     pd = 'qu';
                     va = va.slice(1)
+                    if (va[0] == 'y'){
+                        va = this.setCharAt(va, 0, 'i')
+                    }
+                }
+                if (pd === "g" && va.startsWith("i")) {
+                    pd = "gi";
+                    
+                    // Co nguyem am khac ngoai i
+                    if (va.length > 1){
+                        if (va[1] != 'ê' || pc === "") {
+                            va = va.slice(1);
+                        }
+                    }
                 }
 
                 // va
@@ -207,6 +220,9 @@
                     pc = 'nh';
                 } else if (va == 'oo' && pc == 'ng'){
                     va = 'o';
+                }
+                if (va == 'y'){
+                    va = 'i'
                 }
                 va = va.split('').map(char => this.telexMap[char] ?? char).join('');
 
@@ -243,6 +259,11 @@
                 }
 
                 return words;
+            }
+
+            setCharAt(str,index,chr) {
+                if(index > str.length-1) return str;
+                return str.substring(0,index) + chr + str.substring(index+1);
             }
         }
 
