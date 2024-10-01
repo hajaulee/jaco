@@ -147,7 +147,7 @@
                 const words = this.splitWords(text);
                 let convertedText = "";
                 words.forEach(word => {
-                    const convertedWord = this.convertWord(word);
+                    let convertedWord = this.convertWord(word);
                     const notChanged = convertedWord == word.toLowerCase();
                     const isAlphabet = word.split('').every(char => /[a-z]/i.test(char));
                     if (notChanged){
