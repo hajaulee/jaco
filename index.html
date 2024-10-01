@@ -29,6 +29,12 @@
             justify-content: center;
         }
 
+        .w3-bar {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
         #Jaco>* {
             font-family: 'JacoMaru', Courier, monospace !important;
         }
@@ -45,6 +51,7 @@
         <div class="w3-bar w3-black">
             <button class="w3-bar-item w3-button tablink w3-red" onclick="openTab(event,'Viet')">Tiếng Việt</button>
             <button class="w3-bar-item w3-button tablink" onclick="openTab(event,'Jaco')">Jaco</button>
+            <button class="w3-bar-item w3-button tablink"><a target="_blank" href="https://github.com/hajaulee/jaco">Github</a></button>
         </div>
 
         <div id="Viet" class="w3-container w3-border tab-content w3-animate-left">
