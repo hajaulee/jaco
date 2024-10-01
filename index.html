@@ -150,6 +150,9 @@
                     const convertedWord = this.convertWord(word);
                     const notChanged = convertedWord == word.toLowerCase();
                     const isAlphabet = word.split('').every(char => /[a-z]/i.test(char));
+                    if (notChanged){
+                        convertedWord = word;
+                    }
                     if (notChanged && isAlphabet) {
                         if (convertedText[convertedText.length - 1] != ' ') {
                             convertedText += ' ';
