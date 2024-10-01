@@ -1,0 +1,8 @@
+@font-face {
+    font-family: "JacoMaru";
+    src: url("https://hajaulee.github.io/Houf-Jaco-Maru/new_fonts/ttf/HoufJacoMaru-Regular.ttf");
+}
+
+.jaco-text {
+    font-family: 'JacoMaru', 'Arial Narrow', Arial, sans-serif;
+}
