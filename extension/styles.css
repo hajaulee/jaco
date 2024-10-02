@@ -4,5 +4,6 @@
 }
 
 .jaco-text {
-    font-family: 'JacoMaru', 'Arial Narrow', Arial, sans-serif;
+    font-family: 'JacoMaru', 'Arial Narrow', Arial, sans-serif!important;
+    line-break: anywhere;
 }

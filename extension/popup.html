@@ -4,6 +4,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Popup</title>
     <style>
@@ -27,10 +28,21 @@
         button:hover {
             background-color: #357AE8;
         }
+
+        #translateBtn {
+            margin-top: 1em;
+        }
+
+        #autoTranslation {
+            font-size: 100px;
+        }
     </style>
 </head>
 
 <body>
+    <input id="autoTranslation" type="checkbox">
+    <label for="autoTranslation"> Tự động dịch trang này </label>
+</input>
     <button id="translateBtn">Chuyển chữ</button>
     <p id="status"></p>
     <script src="popup.js"></script>
