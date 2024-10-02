@@ -65,9 +65,18 @@ class Converter {
         }
     }
 
-
+    async convertOnCodeMapReady(text){
+        return new Promise((resolve, reject) => {
+            this.ready.then(() => {
+                resolve(this.convert(text));
+            })
+        });
+    }
 
     convert(text) {
+        if (Object.keys(this.codeMap).length == 0){
+            return text;
+        }
         const words = this.splitWords(text);
         let convertedText = "";
         words.forEach(word => {

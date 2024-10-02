@@ -27,7 +27,7 @@ function saveAutoTranslation(value) {
 }
 
 async function translatePageContent(text) {
-  return Promise.resolve(conveter.convert(text))
+  return conveter.convertOnCodeMapReady(text);
 }
 
 // Walk through the document and replace text
@@ -72,7 +72,9 @@ fetch(chrome.runtime.getURL('code_map.json'))
 
 window.addEventListener("load", () => {
   if (readAutoTranslation() == 'true'){
-    walkAndTranslate(document.body).then();
+    conveter.ready.then(() => {
+      walkAndTranslate(document.body).then();
+    });
   }
 });
 
