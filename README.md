@@ -5,3 +5,8 @@
 ## Extension
 
 ==> [Download extension](https://github.com/hajaulee/jaco/raw/refs/heads/main/extension.crx)
+
+
+# Tham khảo 
+ 
+- https://github.com/ryanphung/chinese-hanviet-cognates
