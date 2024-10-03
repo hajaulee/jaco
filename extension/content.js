@@ -83,7 +83,7 @@ window.addEventListener("load", () => {
 
 
 // Download font
-urlContentToDataUri("https://hajaulee.github.io/Houf-Jaco-Maru/new_fonts/ttf/HoufJacoMaru-Regular.ttf")
+urlContentToDataUri("https://hajaulee.github.io/Houf-Jaco-Maru/new_fonts/ttf/HoufJacoMaru-Light.ttf")
   .then((urlData) => {
     var newStyle = document.createElement('style');
     newStyle.appendChild(document.createTextNode(`
