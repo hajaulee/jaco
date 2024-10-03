@@ -588,6 +588,7 @@
   "ổn": "穏",
   "ủy": "委",
   "ứng": "応",
+  "hanviet": "traditional",
   "khả dĩ": "可以",
   "trung quốc": "中国",
   "hiện tại": "現在",
@@ -5610,5 +5611,8 @@
   "tinh khí": "精気",
   "gia nô": "家奴",
   "an thần": "安神",
-  "giao hợp": "交合"
+  "giao hợp": "交合",
+  "khán giả": "看者",
+  "thính giả": "聴者",
+  "khán thính giả": "看聴者"
 }

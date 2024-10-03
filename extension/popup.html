@@ -32,17 +32,20 @@
         #translateBtn {
             margin-top: 1em;
         }
-
-        #autoTranslation {
-            font-size: 100px;
-        }
     </style>
 </head>
 
 <body>
-    <input id="autoTranslation" type="checkbox">
-    <label for="autoTranslation"> Tự động dịch trang này </label>
-</input>
+    <div>
+        <input id="autoTranslation" type="checkbox">
+        <label for="autoTranslation"> Tự động dịch trang này </label>
+        </input>
+    </div>
+    <div>
+        <input id="useHanviet" type="checkbox">
+        <label for="useHanviet"> Dùng Hán tự</label>
+        </input>
+    </div>
     <button id="translateBtn">Chuyển chữ</button>
     <p id="status"></p>
     <script src="popup.js"></script>

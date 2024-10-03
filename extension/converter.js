@@ -3,10 +3,11 @@ class Converter {
     constructor() {
         this.cache = {};
         this.codeMap = {};
-        this.codeMapReady = () => {};
+        this.hanvietDict = {};
+        this.resolveReady = () => {};
 
         this.ready = new Promise((resolve, reject) => {
-            this.codeMapReady = resolve;
+            this.resolveReady = resolve;
         });
         
         this.paChars = [
@@ -65,46 +66,92 @@ class Converter {
         }
     }
 
-    async convertOnCodeMapReady(text){
+    async convertOnCodeMapReady(text, useHanviet){
         return new Promise((resolve, reject) => {
             this.ready.then(() => {
-                resolve(this.convert(text));
+                resolve(this.convert(text, useHanviet));
             })
         });
     }
 
-    convert(text) {
+    convert(text, useHanviet) {
         if (Object.keys(this.codeMap).length == 0){
             return text;
         }
+        if (useHanviet){
+            text = this.markHanviet(text);
+        }
         const words = this.splitWords(text);
         let convertedText = "";
+        let previousConverted = false;
         words.forEach(word => {
-            let convertedWord = this.convertWord(word);
-            const notChanged = convertedWord == word.toLowerCase();
-            const isAlphabet = word.split('').every(char => /[a-z]/i.test(char));
-            if (notChanged){
+            let convertedWord = word;
+            if (useHanviet){
+                convertedWord = this.hanvietDict[word.replace(/_/g, ' ')] ?? word;
+            }
+            if (convertedWord == word){
+                convertedWord = this.convertWord(word);
+            }
+            
+            const currentConverted = convertedWord != word.toLowerCase();
+            if (currentConverted){
+                if (previousConverted){
+                    convertedText = convertedText.replace(/^\ +|\ +$/g, "");
+                }
+            } else {
                 convertedWord = word;
             }
-            if (notChanged && isAlphabet) {
-                if (convertedText[convertedText.length - 1] != ' ') {
-                    convertedText += ' ';
-                }
-                convertedText += convertedWord + ' ';
-            } else if (convertedWord != ' ') {
-                convertedText += convertedWord;
-            }
-            // convertedText += '/'
+            convertedText += convertedWord;
+
+            if (word != ' '){
+                previousConverted = currentConverted;
+            }       
         })
         return convertedText;
     }
 
     convertWord(word) {
         word = word.toLowerCase();
+        
         if (this.cache[word]) {
             return this.cache[word]
         }
 
+        let [pd, va, pc, dt] = this.splitSpell(word);
+
+        // Not vietnamese
+        if (`${pd}${va}${pc}`.length < word.length || va.trim() == ''){
+            return word
+        }
+
+        [pd, va, pc, dt] = this.postprocessSpell(pd, va, pc, dt);
+
+        const charCode = this.codeMap[`${pd}_${va}_${pc}_${dt}`];
+        return charCode ? `&#${charCode};` : word;
+    }
+
+    markHanviet(text){
+        const words = this.splitWords(text);
+        const marked = [];
+        let i = 0;
+        while (i < words.length) {
+            let word = words[i];
+            let testWordNumbers = [4, 3, 2];
+            for (const wordNum of testWordNumbers) {
+                let testingWord = words.slice(i, i + 2 * wordNum - 1).join('')
+                if (this.hanvietDict[testingWord.toLowerCase()]) {
+                    word = testingWord.toLowerCase().replace(/ /g, '_');
+                    i += 2 * wordNum - 2;
+                    break;
+                }
+            }
+            marked.push(word)
+            i++;
+        }
+        return marked.join("")
+    }
+
+    splitSpell(word){
         let pd = "";
         let va = "";
         let dt = "";
@@ -126,11 +173,10 @@ class Converter {
             }
         }
 
-        // Not vietnamese
-        if (`${pd}${va}${pc}`.length < word.length || va.trim() == ''){
-            return word
-        }
+        return [pd, va, pc, dt];
+    }
 
+    postprocessSpell(pd, va, pc, dt) {
         // pd
         pd = this.pdAlternativeMap[pd] ?? pd;
         if (pd == 'q' && va[0] == 'u'){
@@ -157,16 +203,17 @@ class Converter {
         if (va[0] == 'y'){
             va = this.setCharAt(va, 0, 'i')
         }
+        if (['oao', 'oeo'].includes(va)){
+            va = va.slice(1)
+        }
         va = va.split('').map(char => this.telexMap[char] ?? char).join('');
 
         // dt
         if (dt == 's' && this.pcTac.includes(pc)){
             dt = '';
         }
-        
-        const charCode = this.codeMap[`${pd}_${va}_${pc}_${dt}`]
-        
-        return charCode ? `&#${charCode};` : word;
+
+        return [pd, va, pc, dt];
     }
 
     splitWords(text) {
@@ -199,8 +246,9 @@ class Converter {
         return str.substring(0,index) + chr + str.substring(index+1);
     }
 
-    updateCodeMap(codeMap){
+    updateResources(codeMap, hanvietDict){
         this.codeMap = codeMap;
-        this.codeMapReady(true);
+        this.hanvietDict = hanvietDict;        
+        this.resolveReady(true);
     }
 }

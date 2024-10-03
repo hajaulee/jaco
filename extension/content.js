@@ -1,4 +1,7 @@
 // Translate all the text nodes on the page
+const KEY_AUTO_TRAN = "JacoAutoTranslation";
+const KEY_USE_HANVIET = "UseHanViet";
+
 const conveter = new Converter();
 const textarea = document.createElement('textarea');
 let translatorExecuted = false;
@@ -19,15 +22,15 @@ async function urlContentToDataUri(url){
 }
 
 function readAutoTranslation(){
-  return localStorage.getItem('JacoAutoTranslation');
+  return localStorage.getItem(KEY_AUTO_TRAN);
 }
 
 function saveAutoTranslation(value) {
-  return localStorage.setItem('JacoAutoTranslation', value);
+  return localStorage.setItem(KEY_AUTO_TRAN, value);
 }
 
 async function translatePageContent(text) {
-  return conveter.convertOnCodeMapReady(text);
+  return conveter.convertOnCodeMapReady(text, localStorage.getItem(KEY_USE_HANVIET) == "true");
 }
 
 // Walk through the document and replace text
@@ -64,11 +67,11 @@ async function walkAndTranslate(node) {
 *
 ***************************
 */
-fetch(chrome.runtime.getURL('code_map.json'))
-  .then(res => res.text())
-  .then(res => {
-      conveter.updateCodeMap(JSON.parse(res))
-  })
+const codeMapFetching = fetch(chrome.runtime.getURL('code_map.json')).then(res => res.json());
+const hanvietFetching = fetch(chrome.runtime.getURL('hanviet_dict.json')).then(res => res.json());
+Promise.all([codeMapFetching, hanvietFetching]).then(values => {
+    conveter.updateResources(values[0], values[1]);
+});
 
 window.addEventListener("load", () => {
   if (readAutoTranslation() == 'true'){
@@ -118,12 +121,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true; // Keep the message channel open for sendResponse
   }
 
-  if (request.action === "readAutoTranslation"){
-    sendResponse({result: readAutoTranslation()})
+  if (request.action === "readStorage"){
+    sendResponse({result: localStorage.getItem(request.key)})
   }
 
-  if (request.action === "saveAutoTranslation"){
-    saveAutoTranslation(request.data);
-    sendResponse({result: readAutoTranslation()});
+  if (request.action === "saveStorage"){
+    localStorage.setItem(request.key, request.data);
+    sendResponse({result: localStorage.getItem(request.key)});
   }
 });
