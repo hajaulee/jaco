@@ -418,6 +418,7 @@ triết    哲    triết học
 triển    展    triển khai, phát triển, triển lãm
 truy    追    truy lùng, truy nã, truy cầu
 truyền    伝    truyền đạt, truyền động; tự truyện
+truyện    傳    truyện
 trà    茶    trà
 tràng    腸    ruột
 trác    卓    trác việt
