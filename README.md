@@ -10,3 +10,4 @@
 # Tham khảo 
  
 - https://github.com/ryanphung/chinese-hanviet-cognates
+- http://nguyendu.com.free.fr/hanviet/

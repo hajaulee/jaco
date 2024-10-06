@@ -2,40 +2,58 @@
 const KEY_AUTO_TRAN = "JacoAutoTranslation";
 const KEY_USE_HANVIET = "UseHanViet";
 
+const getHost = () => location.href.split("/")[2];
 const conveter = new Converter();
 const textarea = document.createElement('textarea');
-let translatorExecuted = false;
+
+const global = {
+  translatorExecuted: false,
+  useHanviet: true
+};
+
+
+/* 
+***************************
+*   FUNCTION
+*
+***************************
+*/
+
+async function readStorage(key) {
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage({ action: "readStorage", key: key, url: getHost() }, response => {      
+      if (response) {
+        resolve(response.result);
+      }
+      else {
+        reject(response);
+      }
+    });
+  })
+}
 
 function decodeHtmlEntities(str) {
   textarea.innerHTML = str;
   return textarea.value;
 }
 
-async function urlContentToDataUri(url){
-  return  fetch(url)
-          .then( response => response.blob() )
-          .then( blob => new Promise( callback =>{
-              let reader = new FileReader() ;
-              reader.onload = function(){ callback(this.result) } ;
-              reader.readAsDataURL(blob) ;
-          }) ) ;
-}
-
-function readAutoTranslation(){
-  return localStorage.getItem(KEY_AUTO_TRAN);
-}
-
-function saveAutoTranslation(value) {
-  return localStorage.setItem(KEY_AUTO_TRAN, value);
+async function urlContentToDataUri(url) {
+  return fetch(url)
+    .then(response => response.blob())
+    .then(blob => new Promise(callback => {
+      let reader = new FileReader();
+      reader.onload = function () { callback(this.result) };
+      reader.readAsDataURL(blob);
+    }));
 }
 
 async function translatePageContent(text) {
-  return conveter.convertOnCodeMapReady(text, localStorage.getItem(KEY_USE_HANVIET) == "true");
+  return conveter.convertOnCodeMapReady(text, global.useHanviet);
 }
 
 // Walk through the document and replace text
 async function walkAndTranslate(node) {
-  translatorExecuted = true;
+  global.translatorExecuted = true;
   const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null, false);
   let textNode = walker.nextNode();
 
@@ -43,16 +61,19 @@ async function walkAndTranslate(node) {
     const originText = textNode.textContent.trim();
     const parentNode = textNode.parentNode;
     if (
-      originText && 
+      originText &&
       !['SCRIPT', 'STYLE'].includes(parentNode.nodeName) &&
       !parentNode.getAttribute('data-translator-origin')
-    ){      
-      try{
+    ) {
+      try {
         let translatedText = await translatePageContent(originText);
         textNode.textContent = decodeHtmlEntities(translatedText);
         parentNode.setAttribute('data-translator-origin', originText);
-        parentNode.classList.add("jaco-text");
-      } catch (e){
+        if (translatedText != originText){
+          parentNode.classList.add("jaco-text");
+        }
+
+      } catch (e) {
         // console.log(e, textNode.nodeType, textNode);
       }
     }
@@ -70,11 +91,14 @@ async function walkAndTranslate(node) {
 const codeMapFetching = fetch(chrome.runtime.getURL('code_map.json')).then(res => res.json());
 const hanvietFetching = fetch(chrome.runtime.getURL('hanviet_dict.json')).then(res => res.json());
 Promise.all([codeMapFetching, hanvietFetching]).then(values => {
-    conveter.updateResources(values[0], values[1]);
+  conveter.updateResources(values[0], values[1]);
 });
 
-window.addEventListener("load", () => {
-  if (readAutoTranslation() == 'true'){
+window.addEventListener("load", async () => {
+  const useHanviet = await readStorage(KEY_USE_HANVIET);
+  const autoTranslation = await readStorage(KEY_AUTO_TRAN);
+  global.useHanviet = useHanviet == 'true';
+  if (autoTranslation == "true"){
     conveter.ready.then(() => {
       walkAndTranslate(document.body).then();
     });
@@ -96,37 +120,33 @@ urlContentToDataUri("https://hajaulee.github.io/Houf-Jaco-Maru/new_fonts/ttf/Hou
   })
   .catch((err) => {
     console.error(`Error: ${err}`);
-    
+
   })
 
 
 setInterval(() => {
-  if (translatorExecuted){
+  if (global.translatorExecuted) {
     walkAndTranslate(document.body).then();
   }
 }, 3000);
+
+
 /*
 ***************************
-*     RUNTIME ACTIONS
+*     EVENT
 *
 ***************************
 */
-
 // Listen for a message to start translation
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "startTranslation") {
-    walkAndTranslate(document.body).then(() => {
-      sendResponse({ status: "Chuyển chữ thành công!" });
+    readStorage(KEY_USE_HANVIET).then(result => {
+      global.useHanviet = result == "true";
+      walkAndTranslate(document.body).then(() => {
+        sendResponse({ status: "Chuyển chữ thành công!" });
+      });
     });
-    return true; // Keep the message channel open for sendResponse
   }
 
-  if (request.action === "readStorage"){
-    sendResponse({result: localStorage.getItem(request.key)})
-  }
-
-  if (request.action === "saveStorage"){
-    localStorage.setItem(request.key, request.data);
-    sendResponse({result: localStorage.getItem(request.key)});
-  }
+  return true;
 });

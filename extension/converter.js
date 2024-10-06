@@ -178,7 +178,6 @@ class Converter {
 
     postprocessSpell(pd, va, pc, dt) {
         // pd
-        pd = this.pdAlternativeMap[pd] ?? pd;
         if (pd == 'q' && va[0] == 'u'){
             pd = 'qu';
             va = va.slice(1)
@@ -193,6 +192,7 @@ class Converter {
                 }
             }
         }
+        pd = this.pdAlternativeMap[pd] ?? pd;
 
         // va
         if (va == 'o' && pc =='ng'){

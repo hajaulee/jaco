@@ -15,11 +15,24 @@ def read_file_by_lines(file_path, tranform_line):
     return ret_dict
 
 
-def read_hanviet_single_list():
+def read_hanviet_standard_list(file_path):
     def transform_line(ret_dict, line):
         cols = line.split("    ")
-        ret_dict[cols[0]] = cols[1]
-    return read_file_by_lines('resources/hanviet_single_list.txt', transform_line)      
+        ret_dict[cols[0]] = cols[1].strip()
+    return read_file_by_lines(file_path, transform_line)    
+
+
+def read_hanviet_single_list():
+    return read_hanviet_standard_list('resources/hanviet-single-list.txt')
+
+def read_hanviet_nguyendu():
+    return read_hanviet_standard_list("resources/add-hanviet-nguyendu.txt")
+    
+def read_hanviet_own():
+    return read_hanviet_standard_list("resources/add-hanviet-own.txt")
+
+def read_hanviet_diadanh():
+    return read_hanviet_standard_list("resources/diadanh.txt")
 
 
 def read_chinese_hanviet_congnates():
@@ -32,19 +45,14 @@ def read_chinese_hanviet_congnates():
             ret_dict[word] = jp_kanji
     return read_file_by_lines('resources/chinese-hanviet-cognates.tsv', transform_line)
   
-  
-def read_addition_hanviet_list():
-    def transform_line(ret_dict, line):
-        cols = line.split("    ")
-        ret_dict[cols[0]] = cols[1].strip()
-    return read_file_by_lines('resources/addition-hanviet-list.txt', transform_line)     
-
 
 def main():
     hanviet_dict = OrderedDict()
     hanviet_dict.update(read_hanviet_single_list())
     hanviet_dict.update(read_chinese_hanviet_congnates())
-    hanviet_dict.update(read_addition_hanviet_list())
+    hanviet_dict.update(read_hanviet_nguyendu())
+    hanviet_dict.update(read_hanviet_own())
+    hanviet_dict.update(read_hanviet_diadanh())
     
     with open("extension/hanviet_dict.json", 'w', encoding="utf-8") as output_file:
         json.dump(hanviet_dict, output_file, ensure_ascii=False, indent=2)

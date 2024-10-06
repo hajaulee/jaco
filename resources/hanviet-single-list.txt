@@ -49,6 +49,7 @@ chủng    種    chủng loại, chủng tộc
 cuồng    狂    cuồng sát
 cán    幹    cán sự, cán bộ
 cáo    告    báo cáo, thông cáo
+các    各    các
 cúc    菊    hoa cúc
 căn    根    gốc, căn bản, căn cứ
 cước    脚    cẳng chân
