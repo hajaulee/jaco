@@ -72,6 +72,7 @@ diễn    演    diễn viên, biểu diễn, diễn giả
 diện    面    phản diện, chính diện
 diệp    葉    lá, lạc diệp, hồng diệp
 diệt    滅    diệt vong
+do    由    tự do, lí do
 doanh    営    doanh nghiệp, kinh doanh, doanh trại
 dâm    淫    dâm dục
 dân    民    quốc dân, dân tộc
@@ -114,6 +115,7 @@ huyện    県    huyện, tỉnh
 huyệt    穴    sào huyệt
 huấn    訓    huấn luyện
 huệ    恵    ân huệ
+hung    凶    hung khí, hung thủ
 huống    況    tình huống, trạng huống
 huỳnh    蛍    đom đóm, huỳnh quang
 hàm    含    hàm ý, hàm nghĩa, hàm súc
@@ -242,6 +244,8 @@ mị    魅    mị lực, mộng mị
 mỗi    毎    mỗi
 mộc    木    cây, gỗ
 mộng    夢    mơ
+mực    墨    mực tàu
+mức    墨    mức độ
 nan    難    khó, nan giải, nguy nan; tai nạn
 nghiêm    厳    tôn nghiêm, nghiêm khắc, nghiêm trọng
 nghiên    研    mài, nghiên cứu
@@ -249,6 +253,7 @@ nghiệm    験    thí nghiệm, hiệu nghiệm, kinh nghiệm
 nghiệp    業    nghề nghiệp, công nghiệp, sự nghiệp
 nghênh    迎    hoan nghênh, nghênh tiếp
 nghĩa    義    ý nghĩa, nghĩa lí, đạo nghĩa
+nghề    芸    nghề nghiệp
 nghệ    芸    nghệ thuật, nghệ nhân
 nghị    議    nghị luận, nghị sự
 nghịch    逆    phản nghịch
@@ -256,6 +261,7 @@ ngoại    外    ngoài, ngoại thành, ngoại đạo
 nguy    危    nguy hiểm, nguy cơ
 nguyện    願    tự nguyện, tình nguyện
 nguyệt    月    mặt trăng, tháng, nguyệt san, nguyệt thực
+ngành    梗    ngành
 ngân    銀    ngân hàng, ngân lượng, kim ngân
 ngôn    言    ngôn ngữ, ngôn luận, phát ngôn
 ngũ    五    5
@@ -325,6 +331,7 @@ phẩm    品    sản phẩm
 phẫn    憤    phẫn uất
 phẫu    剖    phẫu thuật, giải phẫu
 phật    仏    phật giáo
+phó    副    phó, phó phòng
 phố    舗    phố xá
 phối    配    phân phối, chi phối, phối ngẫu
 phồn    繁    phồn vinh
@@ -367,6 +374,7 @@ thiền    禅    thiền tọa
 thiển    浅    thiển cận
 thiểu    少    thiếu niên; thiểu số
 thiệu    紹    giới thiệu
+thiệt    貼    thiệt hại, thiệt mạng
 thoái    退    triệt thoái, thoái lui
 thoát    脱    giải thoát
 thoại    話    nói chuyện, đối thoại, giai thoại
@@ -511,6 +519,7 @@ vinh    栄    vinh quang, vinh hạnh
 viêm    炎    lửa lớn
 viễn    遠    viễn phương, vĩnh viễn
 việt    越    vượt qua, việt vị
+vì    為    hành vi; vị kỉ
 vân    雲    mây
 vãn    晩    buổi tối
 vãng    往    vãng lai, dĩ vãng

@@ -66,13 +66,17 @@ async function walkAndTranslate(node) {
       !parentNode.getAttribute('data-translator-origin')
     ) {
       try {
-        let translatedText = await translatePageContent(originText);
-        textNode.textContent = decodeHtmlEntities(translatedText);
-        parentNode.setAttribute('data-translator-origin', originText);
-        if (translatedText != originText){
-          parentNode.classList.add("jaco-text");
-        }
-
+        parentNode.childNodes.forEach(async (childNode) => {
+          if (childNode.nodeType == Node.TEXT_NODE){
+              const childNodeText = childNode.textContent.trim();
+              let translatedText = await translatePageContent(childNodeText);
+              childNode.textContent = decodeHtmlEntities(translatedText);
+              parentNode.setAttribute('data-translator-origin', childNodeText);
+              if (translatedText != childNodeText){
+                parentNode.classList.add("jaco-text");
+              }
+          }
+        });
       } catch (e) {
         // console.log(e, textNode.nodeType, textNode);
       }
@@ -81,6 +85,17 @@ async function walkAndTranslate(node) {
   }
 }
 
+
+async function translateOnInit(){
+  const useHanviet = await readStorage(KEY_USE_HANVIET);
+  const autoTranslation = await readStorage(KEY_AUTO_TRAN);
+  global.useHanviet = useHanviet == 'true';
+  if (autoTranslation == "true"){
+    conveter.ready.then(() => {
+      walkAndTranslate(document.body).then();
+    });
+  }
+}
 
 /* 
 ***************************
@@ -92,19 +107,8 @@ const codeMapFetching = fetch(chrome.runtime.getURL('code_map.json')).then(res =
 const hanvietFetching = fetch(chrome.runtime.getURL('hanviet_dict.json')).then(res => res.json());
 Promise.all([codeMapFetching, hanvietFetching]).then(values => {
   conveter.updateResources(values[0], values[1]);
+  translateOnInit();
 });
-
-window.addEventListener("load", async () => {
-  const useHanviet = await readStorage(KEY_USE_HANVIET);
-  const autoTranslation = await readStorage(KEY_AUTO_TRAN);
-  global.useHanviet = useHanviet == 'true';
-  if (autoTranslation == "true"){
-    conveter.ready.then(() => {
-      walkAndTranslate(document.body).then();
-    });
-  }
-});
-
 
 // Download font
 urlContentToDataUri("https://hajaulee.github.io/Houf-Jaco-Maru/new_fonts/ttf/HoufJacoMaru-Light.ttf")
