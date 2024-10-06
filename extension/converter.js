@@ -87,7 +87,7 @@ class Converter {
         words.forEach(word => {
             let convertedWord = word;
             if (useHanviet){
-                convertedWord = this.hanvietDict[word.replace(/_/g, ' ')] ?? word;
+                convertedWord = this.hanvietDict[word.replace(/_/g, ' ').toLowerCase()] ?? word;
             }
             if (convertedWord == word){
                 convertedWord = this.convertWord(word);

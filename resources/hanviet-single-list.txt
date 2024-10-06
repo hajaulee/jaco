@@ -7,6 +7,7 @@ biệt    別    biệt li, đặc biệt, tạm biệt
 bà    婆    bà già
 bái    拝    sùng bái
 báo    報    báo cáo, báo thù, báo đáp
+bạn    伴    bầu bạn, đồng bạn
 bí    泌    rỉ ra, tiết ra
 bích    壁    tường, bích họa
 bút    筆    bút
@@ -328,6 +329,7 @@ phố    舗    phố xá
 phối    配    phân phối, chi phối, phối ngẫu
 phồn    繁    phồn vinh
 phụng    奉    phụng dưỡng, cung phụng
+phủ    府    phủ
 phức    複    phức tạp
 quang    光    ánh sáng, nhật quang, quang minh
 quyết    決    quyết định
@@ -395,7 +397,6 @@ thẩm    審    thẩm tra, thẩm phán, thẩm định
 thậm    甚    thậm chí
 thắng    勝    thắng lợi, thắng cảnh
 thặng    剰    thặng dư
-thể    体    hình thể, thân thể, thể thao
 thỉnh    請    thỉnh cầu, thỉnh nguyện
 thịnh    盛    thịnh vượng, hưng thịnh
 thọ    寿    trường thọ, tổi thọ
@@ -499,6 +500,7 @@ tổn    損    tổn hại, tổn thương
 tổng    総    tổng số, tổng cộng
 tộc    族    gia tộc, dân tộc, chủng tộc
 tội    罪    tội phạm, tội ác
+tỉnh    省    tỉnh lược, phản tỉnh, hồi tỉnh
 tụng    訟    tố tụng
 tủy    髄    xương tủy
 tửu    酒    rượu

@@ -24,3 +24,14 @@ phố xá    舗舎    phố xá
 văn án    文案    văn án
 tiền nhân hậu quả    前因後果    tiền nhân hậu quả
 quan tham    官貪    quan tham
+thế tử    世子    thế tử
+thái tử phi    太子妃    thái tử phi
+trắc phi    仄妃    trắc phi
+bình thê    平妻    bình thê
+gián tiếp     間接    gián tiếp 
+ủy ban    委班    ủy ban
+quốc công    国公    quốc công
+hầu tước    侯爵    hầu tước
+bá tước    伯爵    bá tước
+nam tước    男爵    nam tước
+tử tước    子爵    tử tước
