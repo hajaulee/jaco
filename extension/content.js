@@ -21,7 +21,7 @@ const global = {
 
 async function readStorage(key) {
   return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage({ action: "readStorage", key: key, url: getHost() }, response => {      
+    chrome.runtime.sendMessage({ action: "readStorage", key: key, url: getHost() }, response => {
       if (response) {
         resolve(response.result);
       }
@@ -67,14 +67,14 @@ async function walkAndTranslate(node) {
     ) {
       try {
         parentNode.childNodes.forEach(async (childNode) => {
-          if (childNode.nodeType == Node.TEXT_NODE){
-              const childNodeText = childNode.textContent.trim();
-              let translatedText = await translatePageContent(childNodeText);
-              childNode.textContent = decodeHtmlEntities(translatedText);
-              parentNode.setAttribute('data-translator-origin', childNodeText);
-              if (translatedText != childNodeText){
-                parentNode.classList.add("jaco-text");
-              }
+          if (childNode.nodeType == Node.TEXT_NODE) {
+            const childNodeText = childNode.textContent.trim();
+            let translatedText = await translatePageContent(childNodeText);
+            childNode.textContent = decodeHtmlEntities(translatedText);
+            parentNode.setAttribute('data-translator-origin', childNodeText);
+            if (translatedText != childNodeText) {
+              parentNode.classList.add("jaco-text");
+            }
           }
         });
       } catch (e) {
@@ -86,11 +86,11 @@ async function walkAndTranslate(node) {
 }
 
 
-async function translateOnInit(){
+async function translateOnInit() {
   const useHanviet = await readStorage(KEY_USE_HANVIET);
   const autoTranslation = await readStorage(KEY_AUTO_TRAN);
   global.useHanviet = useHanviet == 'true';
-  if (autoTranslation == "true"){
+  if (autoTranslation == "true") {
     conveter.ready.then(() => {
       walkAndTranslate(document.body).then();
     });
@@ -103,13 +103,6 @@ async function translateOnInit(){
 *
 ***************************
 */
-const codeMapFetching = fetch(chrome.runtime.getURL('code_map.json')).then(res => res.json());
-const hanvietFetching = fetch(chrome.runtime.getURL('hanviet_dict.json')).then(res => res.json());
-Promise.all([codeMapFetching, hanvietFetching]).then(values => {
-  conveter.updateResources(values[0], values[1]);
-  translateOnInit();
-});
-
 // Download font
 urlContentToDataUri("https://hajaulee.github.io/Houf-Jaco-Maru/new_fonts/ttf/HoufJacoMaru-Light.ttf")
   .then((urlData) => {
@@ -121,6 +114,14 @@ urlContentToDataUri("https://hajaulee.github.io/Houf-Jaco-Maru/new_fonts/ttf/Hou
       }  
     `));
     document.head.appendChild(newStyle);
+
+    const codeMapFetching = fetch(chrome.runtime.getURL('code_map.json')).then(res => res.json());
+    const hanvietFetching = fetch(chrome.runtime.getURL('hanviet_dict.json')).then(res => res.json());
+    Promise.all([codeMapFetching, hanvietFetching]).then(values => {
+      conveter.updateResources(values[0], values[1]);
+      translateOnInit();
+    });
+
   })
   .catch((err) => {
     console.error(`Error: ${err}`);
