@@ -32,19 +32,33 @@ async function readStorage(key) {
   })
 }
 
+async function readFontData() {
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage({ action: "readFontData"}, response => {
+      if (response) {
+        resolve(response.result);
+      }
+      else {
+        reject(response);
+      }
+    });
+  })
+}
+
+function setupFontFamily(uriData) {
+  var newStyle = document.createElement('style');
+  newStyle.appendChild(document.createTextNode(`
+    @font-face {
+        font-family: "JacoMaru";
+        src: url("${uriData}");
+    }  
+  `));
+  document.head.appendChild(newStyle);  
+}
+
 function decodeHtmlEntities(str) {
   textarea.innerHTML = str;
   return textarea.value;
-}
-
-async function urlContentToDataUri(url) {
-  return fetch(url)
-    .then(response => response.blob())
-    .then(blob => new Promise(callback => {
-      let reader = new FileReader();
-      reader.onload = function () { callback(this.result) };
-      reader.readAsDataURL(blob);
-    }));
 }
 
 async function translatePageContent(text) {
@@ -104,16 +118,9 @@ async function translateOnInit() {
 ***************************
 */
 // Download font
-urlContentToDataUri("https://hajaulee.github.io/Houf-Jaco-Maru/new_fonts/ttf/HoufJacoMaru-Light.ttf")
-  .then((urlData) => {
-    var newStyle = document.createElement('style');
-    newStyle.appendChild(document.createTextNode(`
-      @font-face {
-          font-family: "JacoMaru";
-          src: url("${urlData}");
-      }  
-    `));
-    document.head.appendChild(newStyle);
+readFontData()
+  .then((uriData) => {
+    setupFontFamily(uriData)
 
     const codeMapFetching = fetch(chrome.runtime.getURL('code_map.json')).then(res => res.json());
     const hanvietFetching = fetch(chrome.runtime.getURL('hanviet_dict.json')).then(res => res.json());

@@ -1,3 +1,14 @@
+async function urlContentToDataUri(url) {
+  return fetch(url)
+    .then(response => response.blob())
+    .then(blob => new Promise(callback => {
+      let reader = new FileReader();
+      reader.onload = function () { callback(this.result) };
+      reader.readAsDataURL(blob);
+    }));
+}
+
+
 chrome.runtime.onInstalled.addListener(() => {
   console.log('Extension installed.');
 });
@@ -15,6 +26,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     chrome.storage.local.set({ [request.url + request.key]: request.data }).then(() => {
       sendResponse({result: request.data});
     });
+  }
+
+  if (request.action === "readFontData"){
+    urlContentToDataUri("https://hajaulee.github.io/Houf-Jaco-Maru/new_fonts/ttf/HoufJacoMaru-Light.ttf").then(data => {
+      sendResponse({result: data});
+    })
   }
 
   return true;
