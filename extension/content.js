@@ -7,8 +7,10 @@ const conveter = new Converter();
 const textarea = document.createElement('textarea');
 
 const global = {
+  fontDownloaded: false,
   translatorExecuted: false,
-  useHanviet: true
+  useHanviet: true,
+  autoTranslation: false
 };
 
 
@@ -18,6 +20,17 @@ const global = {
 *
 ***************************
 */
+
+async function urlContentToDataUri(url) {
+  return fetch(url)
+    .then(response => response.blob())
+    .then(blob => new Promise(callback => {
+      let reader = new FileReader();
+      reader.onload = function () { callback(this.result) };
+      reader.readAsDataURL(blob);
+    }));
+}
+
 
 async function readStorage(key) {
   return new Promise((resolve, reject) => {
@@ -33,16 +46,9 @@ async function readStorage(key) {
 }
 
 async function readFontData() {
-  return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage({ action: "readFontData"}, response => {
-      if (response) {
-        resolve(response.result);
-      }
-      else {
-        reject(response);
-      }
-    });
-  })
+  const data =  await urlContentToDataUri("https://hajaulee.github.io/Houf-Jaco-Maru/new_fonts/ttf/HoufJacoMaru-Light.ttf");
+  global.fontDownloaded = true;
+  return data;
 }
 
 function setupFontFamily(uriData) {
@@ -67,7 +73,9 @@ async function translatePageContent(text) {
 
 // Walk through the document and replace text
 async function walkAndTranslate(node) {
-  global.translatorExecuted = true;
+  const startTime = new Date().getTime();
+  console.log(new Date().toJSON(), `Start Translating`);
+
   const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null, false);
   let textNode = walker.nextNode();
 
@@ -84,7 +92,7 @@ async function walkAndTranslate(node) {
           if (childNode.nodeType == Node.TEXT_NODE) {
             const childNodeText = childNode.textContent.trim();
             let translatedText = await translatePageContent(childNodeText);
-            childNode.textContent = decodeHtmlEntities(translatedText);
+            childNode.data = decodeHtmlEntities(translatedText);
             parentNode.setAttribute('data-translator-origin', childNodeText);
             if (translatedText != childNodeText) {
               parentNode.classList.add("jaco-text");
@@ -97,17 +105,41 @@ async function walkAndTranslate(node) {
     }
     textNode = walker.nextNode();
   }
+
+  console.log(new Date().toJSON(), `Done  Translating in ${(new Date().getTime() - startTime) / 1000}`);
+  global.translatorExecuted = true;
+  return 0;
 }
 
 
-async function translateOnInit() {
-  const useHanviet = await readStorage(KEY_USE_HANVIET);
-  const autoTranslation = await readStorage(KEY_AUTO_TRAN);
+async function init() {
+  const codeMapFetching = fetch(chrome.runtime.getURL('code_map.json')).then(res => res.json());
+  const hanvietFetching = fetch(chrome.runtime.getURL('hanviet_dict.json')).then(res => res.json());
+  const useHanvietFetching = readStorage(KEY_USE_HANVIET);
+  const autoTranslationFetching = readStorage(KEY_AUTO_TRAN);
+  const [codeMap, hanviet, useHanviet, autoTranslation] = await Promise.all([codeMapFetching, hanvietFetching, useHanvietFetching, autoTranslationFetching]);
+  
   global.useHanviet = useHanviet == 'true';
-  if (autoTranslation == "true") {
-    conveter.ready.then(() => {
-      walkAndTranslate(document.body).then();
-    });
+  global.autoTranslation = autoTranslation == 'true';
+  await conveter.updateResources(codeMap, hanviet);
+
+  if (global.autoTranslation) {
+    readFontData().then(fontData => setupFontFamily(fontData));
+    await walkAndTranslate(document.body);
+  }
+}
+
+
+async function processRequest(request, sender, sendResponse) {
+  if (request.action === "startTranslation") {
+    const useHanviet = await readStorage(KEY_USE_HANVIET);
+    global.useHanviet = useHanviet == 'true';
+    
+    if (!global.fontDownloaded){
+      readFontData().then(fontData => setupFontFamily(fontData));
+    }
+    walkAndTranslate(document.body);
+    sendResponse({ status: "Chuyển chữ thành công!" });
   }
 }
 
@@ -118,23 +150,7 @@ async function translateOnInit() {
 ***************************
 */
 // Download font
-readFontData()
-  .then((uriData) => {
-    setupFontFamily(uriData)
-
-    const codeMapFetching = fetch(chrome.runtime.getURL('code_map.json')).then(res => res.json());
-    const hanvietFetching = fetch(chrome.runtime.getURL('hanviet_dict.json')).then(res => res.json());
-    Promise.all([codeMapFetching, hanvietFetching]).then(values => {
-      conveter.updateResources(values[0], values[1]);
-      translateOnInit();
-    });
-
-  })
-  .catch((err) => {
-    console.error(`Error: ${err}`);
-
-  })
-
+init();
 
 setInterval(() => {
   if (global.translatorExecuted) {
@@ -151,14 +167,6 @@ setInterval(() => {
 */
 // Listen for a message to start translation
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === "startTranslation") {
-    readStorage(KEY_USE_HANVIET).then(result => {
-      global.useHanviet = result == "true";
-      walkAndTranslate(document.body).then(() => {
-        sendResponse({ status: "Chuyển chữ thành công!" });
-      });
-    });
-  }
-
+  processRequest(request, sender, sendResponse);
   return true;
 });

@@ -250,5 +250,6 @@ class Converter {
         this.codeMap = codeMap;
         this.hanvietDict = hanvietDict;        
         this.resolveReady(true);
+        return this.ready;
     }
 }

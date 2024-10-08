@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Chuyển chữ Việt",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Chuyển chữ quốc ngữ sang Jaco.",
   "permissions": [
     "activeTab",
@@ -26,7 +26,7 @@
       "matches": ["<all_urls>"],
       "js": ["converter.js", "content.js"],
       "css": ["styles.css"],
-      "run_at": "document_start"
+      "run_at": "document_end"
     }
   ],
   "background": {
