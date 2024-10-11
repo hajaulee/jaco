@@ -1,37 +1,76 @@
-async function urlContentToDataUri(url) {
-  return fetch(url)
-    .then(response => response.blob())
-    .then(blob => new Promise(callback => {
-      let reader = new FileReader();
-      reader.onload = function () { callback(this.result) };
-      reader.readAsDataURL(blob);
-    }));
+/* 
+***************************
+*   FUNCTION
+*
+***************************
+*/
+
+function injectContentScript(tab, callback) {
+  chrome.scripting.insertCSS({
+    target: { tabId: tab.id },
+    files: ['styles.css']
+  });
+
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    files: ['converter.js', 'content.js']
+  }, callback);
+}
+
+function processMenu(info, tab) {
+  if (info.menuItemId === "startTranslation") {
+    chrome.tabs.sendMessage(tab.id, { action: "startTranslation" }, (response) => {
+      if (response && response.status) {
+        console.log(response.status);
+      }
+    });
+  }
 }
 
 
+/*
+***************************
+*     EVENT
+*
+***************************
+*/
 chrome.runtime.onInstalled.addListener(() => {
   console.log('Extension installed.');
+
+  chrome.contextMenus.create({
+    id: "startTranslation",
+    title: "Chuyển chữ Jaco",
+    contexts: ["page"]
+  });
+
 });
-  
-// Listen for a message to start translation
+
+// When the user clicks the context menu item
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+
+  chrome.tabs.sendMessage(tab.id, { action: "checkInjected" }, (response) => {
+    if (chrome.runtime.lastError) {
+      injectContentScript(tab, () => {
+        processMenu(info, tab);
+      });
+    } else {
+      processMenu(info, tab);
+    }
+  });
+});
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
-  if (request.action === "readStorage"){
-    chrome.storage.local.get([request.url + request.key]).then((result) => {      
-      sendResponse({result: String(result?.[request.url + request.key])})
+  if (request.action === "readStorage") {
+    chrome.storage.local.get([request.url + request.key]).then((result) => {
+      sendResponse({ result: String(result?.[request.url + request.key]) })
     });
   }
 
-  if (request.action === "saveStorage"){
+  if (request.action === "saveStorage") {
     chrome.storage.local.set({ [request.url + request.key]: request.data }).then(() => {
-      sendResponse({result: request.data});
+      sendResponse({ result: request.data });
     });
-  }
-
-  if (request.action === "readFontData"){
-    urlContentToDataUri("https://hajaulee.github.io/Houf-Jaco-Maru/new_fonts/ttf/HoufJacoMaru-Light.ttf").then(data => {
-      sendResponse({result: data});
-    })
   }
 
   return true;

@@ -16,10 +16,16 @@ const extractHost = url => url.split("/")[2];
 ***************************
 */
 
+function withCurrentTab(func) {
+  chrome.tabs.query(activeTabFilter, (tabs) => {
+    func(tabs[0]);
+  });
+}
+
 async function readStorage(key) {
   return new Promise((resolve, reject) => {
-    chrome.tabs.query(activeTabFilter, (tabs) => {
-      chrome.runtime.sendMessage({ action: "readStorage", key: key, url: extractHost(tabs[0].url) }, (response) => {
+    withCurrentTab((tab) => {
+      chrome.runtime.sendMessage({ action: "readStorage", key: key, url: extractHost(tab.url) }, (response) => {
         if (response) {
           resolve(response.result);
         } else {
@@ -32,9 +38,9 @@ async function readStorage(key) {
 
 async function saveStorage(key, data) {
   return new Promise((resolve, reject) => {
-    chrome.tabs.query(activeTabFilter, (tabs) => {
+    withCurrentTab((tab) => {
       chrome.runtime.sendMessage({
-        action: 'saveStorage', key: key, data: data, url: extractHost(tabs[0].url)
+        action: 'saveStorage', key: key, data: data, url: extractHost(tab.url)
       }, (response) => {
         if (response) {
           resolve(response.result);
@@ -62,6 +68,23 @@ readStorage(KEY_USE_HANVIET).then(result => {
 });
 
 
+withCurrentTab((tab) => {
+
+  chrome.tabs.sendMessage(tab.id, { action: "checkInjected" }, (response) => {
+    if (chrome.runtime.lastError) {
+      chrome.scripting.insertCSS({
+        target: { tabId: tab.id },
+        files: ['styles.css']
+      });
+    
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        files: ['converter.js', 'content.js']
+      });    
+    }
+  });
+});
+
 /* 
 ***************************
 *   EVENT
@@ -71,8 +94,8 @@ readStorage(KEY_USE_HANVIET).then(result => {
 
 
 el('translateBtn').addEventListener('click', () => {
-  chrome.tabs.query(activeTabFilter, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, { action: "startTranslation" }, (response) => {
+  withCurrentTab((tab) => {
+    chrome.tabs.sendMessage(tab.id, { action: "startTranslation" }, (response) => {
       if (response && response.status) {
         el('status').innerText = response.status;
       }

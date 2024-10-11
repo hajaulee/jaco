@@ -13,7 +13,6 @@ const global = {
   autoTranslation: false
 };
 
-
 /* 
 ***************************
 *   FUNCTION
@@ -74,7 +73,7 @@ async function translatePageContent(text) {
 // Walk through the document and replace text
 async function walkAndTranslate(node) {
   const startTime = new Date().getTime();
-  console.log(new Date().toJSON(), `Start Translating`);
+  // console.log(new Date().toJSON(), `Start Translating`);
 
   const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null, false);
   let textNode = walker.nextNode();
@@ -106,7 +105,7 @@ async function walkAndTranslate(node) {
     textNode = walker.nextNode();
   }
 
-  console.log(new Date().toJSON(), `Done  Translating in ${(new Date().getTime() - startTime) / 1000}`);
+  // console.log(new Date().toJSON(), `Done  Translating in ${(new Date().getTime() - startTime) / 1000}`);
   global.translatorExecuted = true;
   return 0;
 }
@@ -140,6 +139,9 @@ async function processRequest(request, sender, sendResponse) {
     }
     walkAndTranslate(document.body);
     sendResponse({ status: "Chuyển chữ thành công!" });
+  } else if (request.action === "checkInjected"){
+    console.log("Injected");
+    sendResponse({status: true});
   }
 }
 
