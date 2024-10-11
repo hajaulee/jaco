@@ -446,7 +446,6 @@ trẫm    朕    trẫm (nhân xưng của vua)
 trận    陣    trận mạc
 trật    秩    trật tự
 trệ    滞    đình trệ
-trở    阻    cản trở, trở ngại
 trợ    助    hộ trợ, trợ giúp, viện trợ, cứu trợ
 trụ    住    cư trú; trụ sở
 trụy    墜    rơi, trụy lạc
@@ -470,7 +469,6 @@ tuệ    穂    tai
 tàn    残    tàn dư, tàn tích, tàn đảng
 tàng    蔵    bảo tàng, tàng trữ, tàng hình
 tác    作    tác phẩm, công tác, canh tác
-tái    再    lại, tái phát
 tâm    心    tâm lí, nội tâm
 tây    西    phương tây
 tín    信    uy tín, tín thác, thư tín
