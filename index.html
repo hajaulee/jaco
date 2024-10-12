@@ -34,12 +34,9 @@
             top: 0;
             z-index: 1;
         }
-
-        #Jaco>* {
-            font-family: 'JacoMaru', Courier, monospace !important;
-        }
         
         #textOutput {
+            font-family: 'JacoMaru', Courier, monospace !important;
             font-size: 24px;
             line-break: anywhere;
         }
@@ -62,7 +59,12 @@
         </div>
 
         <div id="Jaco" class="w3-container w3-border tab-content w3-animate-right" style="display:none">
-            <div id="textOutput">Hello</div>
+            <div>
+                <input type="checkbox" id="useHantuCheckBox">
+                    <label for="useHantuCheckBox"> Dùng chữ Hán</label>
+                </input>
+                <div id="textOutput">Hello</div>
+            </div>
         </div>
     </div>
 
@@ -92,17 +94,19 @@
 
         const textInput = document.getElementById("textInput");
         const textOutput = document.getElementById("textOutput");
+        const useHantuCheckBox = document.getElementById("useHantuCheckBox");
 
         function convertInput() {
             localStorage.setItem('inputText', textInput.value);
-            textOutput.innerHTML = conveter.convert(textInput.value, true).replace(/\n/g, '<br>');
+            textOutput.innerHTML = conveter.convert(textInput.value, useHantuCheckBox.checked).replace(/\n/g, '<br>');
         }
 
         textInput.addEventListener('keyup', () => convertInput());
         textInput.addEventListener('change', () => convertInput());
+        useHantuCheckBox.addEventListener('change', () => convertInput());
         conveter.ready.then(() => {
             textInput.value = localStorage.getItem('inputText') || 'Xin chào 越南 from Z。'
-            convertInput()
+            convertInput();
         });
     </script>
 </body>
