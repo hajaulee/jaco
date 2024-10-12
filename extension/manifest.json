@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Chuyển chữ Việt",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "Chuyển chữ quốc ngữ sang Jaco.",
   "permissions": [
     "activeTab",
@@ -14,21 +14,14 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
-    }
-  },
+  "action": {},
   "background": {
     "service_worker": "background.js"
   },
   "web_accessible_resources": [
       {
           "matches": ["<all_urls>"],
-          "resources": ["code_map.json", "hanviet_dict.json"]
+          "resources": ["code_map.json", "hanviet_dict.json", "popup.html"]
       }
   ]
 }

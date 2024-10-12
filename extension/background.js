@@ -1,3 +1,6 @@
+const global = {
+  contentScriptMaintainerTimers: {}
+}
 /* 
 ***************************
 *   FUNCTION
@@ -5,16 +8,37 @@
 ***************************
 */
 
-function injectContentScript(tab, callback) {
-  chrome.scripting.insertCSS({
-    target: { tabId: tab.id },
-    files: ['styles.css']
+function injectScriptAndCss(tab) {
+  return new Promise((resolve, reject) => {
+    chrome.scripting.insertCSS({
+      target: { tabId: tab.id },
+      files: ['styles.css']
+    });
+  
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      files: ['converter.js', 'content.js']
+    }, () => { resolve(true) });
   });
+}
 
-  chrome.scripting.executeScript({
-    target: { tabId: tab.id },
-    files: ['converter.js', 'content.js']
-  }, callback);
+function injectAndMaintainContentScript(tab) {
+  return new Promise((resolve, reject) => {
+    if (!global.contentScriptMaintainerTimers[tab.id]){
+      const timer = setInterval(() => {
+        chrome.tabs.sendMessage(tab.id, { action: "checkInjected" }, (response) => {
+          if (chrome.runtime.lastError) {
+            injectScriptAndCss(tab).then(() => resolve(true));
+          } else {
+            resolve(true);
+          }
+        });
+      }, 3000);
+      global.contentScriptMaintainerTimers[tab.id] = timer;
+    }else {
+      resolve(true);
+    }
+  })
 }
 
 function processMenu(info, tab) {
@@ -43,22 +67,31 @@ chrome.runtime.onInstalled.addListener(() => {
     contexts: ["page"]
   });
 
+  if (navigator.userAgent.includes("Mobile")){
+    chrome.action.setPopup({ popup: "" });
+  } else {
+    chrome.action.setPopup({ popup: "popup.html" });
+  }
+
 });
 
 // When the user clicks the context menu item
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-
-  chrome.tabs.sendMessage(tab.id, { action: "checkInjected" }, (response) => {
-    if (chrome.runtime.lastError) {
-      injectContentScript(tab, () => {
-        processMenu(info, tab);
-      });
-    } else {
-      processMenu(info, tab);
-    }
+  injectAndMaintainContentScript(tab).then(() => {
+    processMenu(info, tab);
   });
 });
 
+// No popup in icon, show popup inside website
+chrome.action.onClicked.addListener((tab) => {
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    files: ['add_popup.js']
+  });
+});
+
+
+// Message Event
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   if (request.action === "readStorage") {
@@ -71,6 +104,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     chrome.storage.local.set({ [request.url + request.key]: request.data }).then(() => {
       sendResponse({ result: request.data });
     });
+  }
+
+  if (request.action === "injectContentScript"){
+    injectAndMaintainContentScript(request.tab)
   }
 
   return true;

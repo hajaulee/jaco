@@ -69,20 +69,7 @@ readStorage(KEY_USE_HANVIET).then(result => {
 
 
 withCurrentTab((tab) => {
-
-  chrome.tabs.sendMessage(tab.id, { action: "checkInjected" }, (response) => {
-    if (chrome.runtime.lastError) {
-      chrome.scripting.insertCSS({
-        target: { tabId: tab.id },
-        files: ['styles.css']
-      });
-    
-      chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        files: ['converter.js', 'content.js']
-      });    
-    }
-  });
+  chrome.runtime.sendMessage({ action: "injectContentScript", tab: tab });
 });
 
 /* 
