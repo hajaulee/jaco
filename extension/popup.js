@@ -53,6 +53,28 @@ async function saveStorage(key, data) {
 }
 
 
+function initConverterDemo(){
+  const conveter = new Converter();
+  const codeMapFetching = fetch("./code_map.json").then(res => res.json());
+  const hanvietFetching = fetch("./hanviet_dict.json").then(res => res.json());
+  Promise.all([codeMapFetching, hanvietFetching]).then(values => {
+      conveter.updateResources(values[0], values[1]);
+  });
+  const textInput = document.getElementById('textInput');
+  const textOutput = document.getElementById('textOutput');
+
+  function convertInput() {
+      textOutput.innerHTML = conveter.convert(textInput.innerText, useHanviet.checked).trim().replace(/\n/g, '<br>');
+  }
+
+  textInput.addEventListener('keyup', () => convertInput());
+  textInput.addEventListener('change', () => convertInput());
+  useHanviet.addEventListener('change', () => convertInput());
+  conveter.ready.then(() => {
+      convertInput();
+  });
+}
+
 /* 
 ***************************
 *   INIT
@@ -62,6 +84,9 @@ async function saveStorage(key, data) {
 
 readStorage(KEY_AUTO_TRAN).then(result => {
   el('autoTranslation').checked = result == 'true';
+  if (result == 'true'){
+    el('translateBtn').click();
+  }
 });
 readStorage(KEY_USE_HANVIET).then(result => {
   el('useHanviet').checked = result == 'true';
@@ -71,6 +96,9 @@ readStorage(KEY_USE_HANVIET).then(result => {
 withCurrentTab((tab) => {
   chrome.runtime.sendMessage({ action: "injectContentScript", tab: tab });
 });
+
+
+initConverterDemo();
 
 /* 
 ***************************

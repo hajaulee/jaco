@@ -61,17 +61,19 @@ function processMenu(info, tab) {
 chrome.runtime.onInstalled.addListener(() => {
   console.log('Extension installed.');
 
+  
+  if (navigator.userAgent.includes("Mobile")){
+    chrome.action.setPopup({ popup: "" });
+  } else {
+    chrome.action.setPopup({ popup: "popup.html" });
+  }
+
   chrome.contextMenus.create({
     id: "startTranslation",
     title: "Chuyển chữ Jaco",
     contexts: ["page"]
   });
 
-  if (navigator.userAgent.includes("Mobile")){
-    chrome.action.setPopup({ popup: "" });
-  } else {
-    chrome.action.setPopup({ popup: "popup.html" });
-  }
 
 });
 

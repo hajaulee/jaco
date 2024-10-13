@@ -7,12 +7,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Popup</title>
+    <script src="./converter.js"></script>
+    <link href="./styles.css" rel="stylesheet">
     <style>
         body {
             min-width: 200px;
-            min-height: 100px;
             font-family: Arial, sans-serif;
-            padding: 10px;
+        }
+
+        .main {
+            min-height: 15rem;
+            padding: 5px;
         }
 
         button {
@@ -32,22 +37,67 @@
         #translateBtn {
             margin-top: 1em;
         }
+
+        footer {
+            height: 3em;
+            width: 100%;
+            position: fixed;
+            background: #efefef;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .expandable-textarea {
+            border: 0.5px solid #eeeeee;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: inherit;
+            padding: 1px 6px;
+            outline: none;
+
+            display: block;
+            width: calc(100% - 10px);
+            overflow: hidden;
+            resize: both;
+            min-height: 40px;
+            max-height: 80px;
+            line-height: 20px;
+        }
+
+        #textOutput {
+            /* margin-top: -1em; */
+            font-size: 16px;
+        }
     </style>
 </head>
 
 <body>
-    <div>
-        <input id="autoTranslation" type="checkbox">
-        <label for="autoTranslation"> Tự động dịch trang này </label>
-        </input>
+    <div class="main">
+        <div id="textInput" class="expandable-textarea" role="textbox" contenteditable>
+            Gõ thử tại đây
+        </div>
+        <div id="textOutput" class="jaco-text"></div>
+        <hr />
+        <div>
+            <input id="autoTranslation" type="checkbox">
+            <label for="autoTranslation"> Tự động dịch trang này </label>
+            </input>
+        </div>
+        <div>
+            <input id="useHanviet" type="checkbox">
+            <label for="useHanviet"> Dùng Hán tự</label>
+            </input>
+        </div>
+        <button id="translateBtn">Chuyển chữ</button>
+        <p id="status"></p>
+        <div style="height: 3em;"></div>
     </div>
-    <div>
-        <input id="useHanviet" type="checkbox">
-        <label for="useHanviet"> Dùng Hán tự</label>
-        </input>
-    </div>
-    <button id="translateBtn">Chuyển chữ</button>
-    <p id="status"></p>
+    <footer>
+        <a href="https://hajaulee.github.io/jaco/" target="_blank">Mở trang đổi chữ online.</a>
+    </footer>
     <script src="popup.js"></script>
 </body>
 
