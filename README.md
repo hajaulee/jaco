@@ -6,8 +6,16 @@
 
 ==> [Download extension](https://github.com/hajaulee/jaco/raw/refs/heads/main/extension.crx)
 
+## Quy tắc
 
-# Tham khảo 
+![Rule](docs/rule.png)
+
+## Ví dụ
+
+![Image](docs/vnexpress.png)
+
+
+## Tham khảo 
  
 - https://github.com/ryanphung/chinese-hanviet-cognates
 - http://nguyendu.com.free.fr/hanviet/
