@@ -4,6 +4,9 @@
 
 ## Extension
 
+==> [Chrome Web Store](https://chromewebstore.google.com/detail/chuy%E1%BB%83n-ch%E1%BB%AF-vi%E1%BB%87t/podmifaaipikpganlbffdomeddkdadnk)
+
+
 ==> [Download extension](https://github.com/hajaulee/jaco/raw/refs/heads/main/extension.crx)
 
 ## Quy tắc
