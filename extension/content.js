@@ -1,6 +1,7 @@
 // Translate all the text nodes on the page
 const KEY_AUTO_TRAN = "JacoAutoTranslation";
 const KEY_USE_HANVIET = "UseHanViet";
+const ONLINE_HANVIET_DICT_URL = "https://hajaulee.github.io/jaco/extension/hanviet_dict.json";
 
 const getHost = () => location.href.split("/")[2];
 const conveter = new Converter();
@@ -113,7 +114,7 @@ async function walkAndTranslate(node) {
 
 async function init() {
   const codeMapFetching = fetch(chrome.runtime.getURL('code_map.json')).then(res => res.json());
-  const hanvietFetching = fetch(chrome.runtime.getURL('hanviet_dict.json')).then(res => res.json());
+  const hanvietFetching = fetch(ONLINE_HANVIET_DICT_URL).then(res => res.json());
   const useHanvietFetching = readStorage(KEY_USE_HANVIET);
   const autoTranslationFetching = readStorage(KEY_AUTO_TRAN);
   const [codeMap, hanviet, useHanviet, autoTranslation] = await Promise.all([codeMapFetching, hanvietFetching, useHanvietFetching, autoTranslationFetching]);
