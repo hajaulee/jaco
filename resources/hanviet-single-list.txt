@@ -2,9 +2,13 @@ an    安    an bình, an ổn
 bang    邦    liên bang
 bao    包    bao bọc
 binh    兵    binh lính, binh lực
+biên    辺    biên, biên giới
+biến    変    biến đổi, biến thiên
+biểu    表    biểu hiện, bảng biểu, biểu diễn
 biện    弁    hùng biện, biện luận
 biệt    別    biệt li, đặc biệt, tạm biệt
 bà    婆    bà già
+bá    覇    xưng bá
 bái    拝    sùng bái
 báo    報    báo cáo, báo thù, báo đáp
 bạn    伴    bầu bạn, đồng bạn
@@ -22,6 +26,7 @@ bệ    陛    bệ hạ
 bệnh    病    bệnh nhân, bệnh viện, bệnh tật
 bồn    盆    cái bồn
 bổ    補    bổ sung, bổ túc
+bộ    部    bộ môn, bộ phận
 bộc    暴    bạo lực, bộc lộ
 bội    倍    bội thu, bội số
 cam    甘    ngọt, cam chịu
@@ -38,6 +43,7 @@ chuyển    転    chuyển động
 châm    針    cái kim, phương châm, châm cứu
 chúng    衆    quần chúng, chúng sinh
 chư    諸    chư hầu
+chương    章    chương sách
 chưng    蒸    chưng cất
 chướng    障    chướng ngại
 chưởng    掌    lòng bàn tay
@@ -51,8 +57,11 @@ cuồng    狂    cuồng sát
 cán    幹    cán sự, cán bộ
 cáo    告    báo cáo, thông cáo
 các    各    các
+cân    斤    cân (kilo), cái rìu
+câu    拘    câu thúc
 cúc    菊    hoa cúc
 căn    根    gốc, căn bản, căn cứ
+cương    剛    cứng
 cước    脚    cẳng chân
 cường    強    cường quốc; miễn cưỡng
 cưỡng    強    cường quốc; miễn cưỡng
@@ -80,12 +89,14 @@ dã    野    cánh đồng, hoang dã, thôn dã
 dĩ    以    dĩ tiền, dĩ vãng
 dư    余    thặng dư, dư dật
 dưỡng    養    dưỡng dục
+dược    薬    thuốc
 dạng    様    đa dạng, hình dạng
 dẫn    引    dẫn hỏa
 dật    逸    ẩn dật
 dị    異    dị bản, dị tộc, dị giáo
 dụng    用    sử dụng, dụng cụ, công dụng
 giang    江    trường giang, giang hồ
+giá    価    giá cả, vô giá, giá trị
 giáng    降    giáng trần; đầu hàng
 giáo    教    giáo dục, giáo viên
 giải    解    giải quyết, giải thể, giải thích
@@ -99,6 +110,8 @@ hiền    賢    hiền thần, hiền nhân
 hiểm    険    nguy hiểm, mạo hiểm, hiểm ác
 hiển    顕    hiển hách, hiển thị
 hiện    現    xuất hiện, hiện tại, hiện tượng, hiện hình
+hiệp    協    hiệp lực
+hoa    花    hoa, bông hoa
 hoan    歓    hoan nghênh
 hoang    荒    hoang dã, hoang dại
 hoài    懐    hoài cổ
@@ -155,6 +168,7 @@ khang    康    kiện khang, khang trang
 khinh    軽    khinh suất, khinh khi
 khiêm    謙    khiêm tốn
 khiếm    欠    khiếm khuyết
+khoa    科    khoa học, chuyên khoa
 khoan    寛    khoan dung
 khoái    快    khoái lạc
 khoán    券    vé, chứng khoán
@@ -167,6 +181,7 @@ khuất    屈    khuất phục
 khuẩn    菌    vi khuẩn
 khuếch    拡    khuếch đại
 khách    客    hành khách, thực khách
+khám    勘    khám
 khán    看    khán giả
 kháng    抗    chống lại, đề kháng, kháng chiến
 khánh    慶    quốc khánh
@@ -235,6 +250,7 @@ mô    模    mô phỏng, mô hình
 môi    媒    môi giới
 môn    門    cửa, nhập môn, môn đồ, bộ môn
 mĩ    美    mĩ nhân, mĩ lệ
+mỹ    美    mĩ nhân, mĩ lệ
 mưu    謀    âm mưu
 mại    売    thương mại
 mẫn    敏    mẫn cảm
@@ -294,11 +310,13 @@ nhĩ    耳    tai
 nhũ    乳    nhũ mẫu
 nhũng    冗    
 như    如    như thế
+nhược    弱    nhược điểm, nhược tiểu
 nhượng    譲    nhượng bộ
 nhạc    楽    an lạc, lạc thú, âm nhạc
 nhẫn    忍    tàn nhẫn, nhẫn nại
 nhập    入    nhập cảnh, nhập môn, nhập viện
 nhật    日    mặt trời, ngày, nhật thực, nhật báo
+nhục    辱    sỉ nhục
 ni    尼    ni cô
 ninh    寧    an ninh
 niêm    粘    niêm mạc
@@ -499,6 +517,7 @@ tể    宰    chúa tể, tể tướng
 tễ    剤    dịch tễ
 tọa    座    chỗ ngồi, tọa đàm, tọa độ
 tỏa    鎖    xích, bế tỏa, tỏa cảng
+tố    訴    tố cáo, tố tụng
 tốc    速    tốc độ, tăng tốc
 tống    送    tiễn, tống tiễn, tống đạt
 tốt    卒    tốt nghiệp

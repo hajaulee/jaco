@@ -1,5 +1,6 @@
 .vscode
 tmp
+experience
 
 *.pem
 *.zip
