@@ -118,4 +118,4 @@ ngoại lệ    外例    ngoại lệ
 hợp lệ    合例    hợp lệ
 phép thuật    法術    phép thuật
 thương mại    商売    thương mại
-bán niên    半年    bán niên
+bán niên    半年    bán niên.
