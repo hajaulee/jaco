@@ -5,7 +5,7 @@ on:
     branchs:
       - "main"
     paths:
-      - "resource/**"
+      - "resources/**"
 
 jobs:
   generate-hanviet-dict:
