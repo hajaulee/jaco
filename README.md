@@ -22,3 +22,6 @@
  
 - https://github.com/ryanphung/chinese-hanviet-cognates
 - http://nguyendu.com.free.fr/hanviet/
+
+## Đóng góp
+- Đóng góp từ hán việt tại: https://github.com/hajaulee/jaco/edit/main/resources/add-hanviet-own.txt
