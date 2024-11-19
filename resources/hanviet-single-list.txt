@@ -104,6 +104,7 @@ giải    解    giải quyết, giải thể, giải thích
 giảm    減    gia giảm, giảm
 giản    簡    đơn giản
 giảng    講    giảng đường, giảng bài
+giới    界    giới hạn
 hao    耗    tiêu hao, hao mòn
 hiếu    孝    hiếu thảo
 hiềm    嫌    hiềm khích
