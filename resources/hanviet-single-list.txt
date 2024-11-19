@@ -351,6 +351,7 @@ phẫn    憤    phẫn uất
 phẫu    剖    phẫu thuật, giải phẫu
 phật    仏    phật giáo
 phó    副    phó, phó phòng
+phóng    放    phóng sinh
 phố    舗    phố xá
 phối    配    phân phối, chi phối, phối ngẫu
 phồn    繁    phồn vinh
