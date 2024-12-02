@@ -128,3 +128,5 @@ tra cứu    査究    tra cứu
 tuyến đường    線塘    tuyến đường
 đường quốc lộ    塘國路    đường quốc lộ
 phóng viên    訪員    phóng viên
+báo chí    報誌    báo chí
+cảm ơn    感恩    cảm ơn
