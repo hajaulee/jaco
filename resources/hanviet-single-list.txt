@@ -395,6 +395,7 @@ thao    操    thao tác
 thiêu    焼    thiêu đốt
 thiền    禅    thiền tọa
 thiển    浅    thiển cận
+thiếu    少    thiếu niên; thiểu số
 thiểu    少    thiếu niên; thiểu số
 thiệu    紹    giới thiệu
 thiệt    貼    thiệt hại, thiệt mạng
