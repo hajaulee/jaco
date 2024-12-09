@@ -421,7 +421,10 @@ thí    試    thí nghiệm, thí điểm
 thô    粗    thô ráp
 thôn    村    thôn xã, thôn làng
 thông    通    thông qua, thông hành, phổ thông
+thăng    昇    thăng tiến, thăng thiên
+thường    常    bình thường, thông thường
 thưởng    賞    giải thưởng, tưởng thưởng
+thượng    上    thượng tầng, thượng đẳng
 thạch    石    đá, thạch anh, bảo thạch
 thảm    惨    thảm thương, thảm sát
 thấu    透    thẩm thấu
