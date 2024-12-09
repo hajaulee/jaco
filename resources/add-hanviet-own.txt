@@ -134,3 +134,4 @@ nhiệm kì    任期    nhiệm kì
 nhiệm kỳ    任期    nhiệm kỳ
 thiết quân    鉄軍    thiết quân
 môi trường    媒場    môi trường
+kiểm soát    検刷    kiểm soát
