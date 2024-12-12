@@ -165,7 +165,9 @@ hồi    回    vu hồi, chương hồi
 hồn    魂    linh hồn
 hỗ    互    tương hỗ
 hỗn    混    hỗn hợp, hỗn độn, hỗn loạn
+hội    会    hội họp, đại hội
 hợp    合    thích hợp, hội họp, hợp lí
+hứa    許    cho phép, hứa khả
 kham    堪    chịu đựng được
 khang    康    kiện khang, khang trang
 khinh    軽    khinh suất, khinh khi
