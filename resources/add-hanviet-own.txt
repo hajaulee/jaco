@@ -136,3 +136,6 @@ thiết quân    鉄軍    thiết quân
 môi trường    媒場    môi trường
 kiểm soát    検刷    kiểm soát
 liên quan    連関    liên quan
+thực thi    実施    thực thi
+gián đoạn    間断    gián đoạn
+điều hành    調行    điều hành
