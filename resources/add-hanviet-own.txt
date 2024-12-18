@@ -139,3 +139,6 @@ liên quan    連関    liên quan
 thực thi    実施    thực thi
 gián đoạn    間断    gián đoạn
 điều hành    調行    điều hành
+dân sinh    民生    dân sinh
+dịch vụ    役務    dịch vụ
+đồng bằng    同平    đồng bằng
