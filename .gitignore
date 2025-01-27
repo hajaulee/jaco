@@ -1,6 +1,8 @@
 .vscode
 tmp
-experience
+experience/**/*.pdf
+experience/**/*.txt
+experience/**/*.ttf
 
 *.pem
 *.zip

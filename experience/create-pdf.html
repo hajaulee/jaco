@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jaco</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        @font-face {
+            font-family: "JacoMaru";
+            src: url("https://hajaulee.github.io/Houf-Jaco-Maru/new_fonts/ttf/HoufJacoMaru-Light.ttf");
+        }
+
+        @font-face {
+            font-family: "HoufRegular";
+            src: url("https://hajaulee.github.io/Houf-Jaco-Regular-Script/new_fonts/ttf/HoufRegularScript-Light.ttf");
+        }
+
+        @font-face {
+            font-family: "sanjikaishu";
+            src: url("./fonts/SanJiKaiShu-2.ttf");
+        }
+
+        @font-face {
+            font-family: "bianyakai";
+            src: url("./fonts/AaBianYaKai-2.ttf");
+        }
+
+        .jaco-maru-font {
+            font-family: 'JacoMaru', Courier, monospace !important;
+        }
+
+        .regular-font {
+            font-family: 'HoufRegular', 'sanjikaishu', Courier, monospace !important;
+        }
+
+        .input-text {
+            outline: 0;
+            width: 100%;
+            min-height: 300px;
+            max-width: 600px;
+            height: calc(100% - 60px);
+            border-radius: 7px;
+            padding: 1em;
+            margin: 1em;
+            font-size: 16px;
+        }
+
+        .center {
+            display: flex;
+            justify-content: center;
+        }
+
+        .w3-bar {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        
+        #textOutput {
+            font-size: 24px;
+            line-break: anywhere;
+            
+        }
+
+        #textOutput h1, h2, h3, h4, h5, h6 {
+            font-family: inherit;
+        }
+
+        #textOutput h1 {
+            font-size: 56px;
+        }
+
+        .page {
+            width: 35em;
+            height: 49em;
+            writing-mode: vertical-rl;
+            border: 1px solid lightgrey;
+            border-radius: 5px;
+            padding: 1em;
+            letter-spacing: 0.1rem;
+            padding-right: 6em;
+            padding-top: 3em;
+            position: relative;
+        }
+
+        .pageNum {
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            writing-mode: lr;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        @media print {
+            body {
+                visibility: hidden;
+            }
+            #textOutput {
+                visibility: visible;
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+
+            #textOutput .page{
+                border: none;
+            }
+
+            #textOuput hr {
+                visibility: hidden;
+                display: none;
+            }
+        }
+    </style>
+    <script src="/extension/converter.js"></script>
+</head>
+
+<body>
+    <div class="w3-container">
+        <div class="w3-bar w3-black">
+            <button class="w3-bar-item w3-button tablink w3-red" onclick="openTab(event,'Viet')">Tiếng Việt</button>
+            <button class="w3-bar-item w3-button tablink" onclick="openTab(event,'Jaco')">Jaco</button>
+            <button class="w3-bar-item w3-button tablink"><a target="_blank" href="https://github.com/hajaulee/jaco">Github</a></button>
+        </div>
+
+        <div id="Viet" class="w3-container w3-border tab-content w3-animate-left">
+            <div class="center">
+                <textarea id="textInput" class="input-text" placeholder="Nhập văn bản ở đây!"></textarea>
+            </div>
+        </div>
+
+        <div id="Jaco" class="w3-container w3-border tab-content w3-animate-right" style="display:none">
+            <div>
+                <input type="checkbox" id="useHantuCheckBox">
+                    <label for="useHantuCheckBox"> Dùng chữ Hán</label>
+                </input>
+                <select id="fontSelect">
+                    <option value="jaco-maru-font">jaco-maru-font</option>
+                    <option value="regular-font">regular-font</option>
+                </select>
+                <button id="pdfExportBtn" onclick="window.print();">Print</button>
+                <div id="textOutput" class="jaco-maru-font">Hello</div>
+            </div>
+        </div>
+
+        <div id="htmlUnescaper" style="display: none;"></div>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, x, tablinks;
+            x = document.getElementsByClassName("tab-content");
+            for (i = 0; i < x.length; i++) {
+                x[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablink");
+            for (i = 0; i < x.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" w3-red", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " w3-red";
+        }
+    </script>
+    <script>
+        const LINE_IN_PAGE = 16
+        const CHAR_IN_LINE = 40
+        const fullWidthMap = {
+            ",": "、",
+            ".": "。"
+        };
+        function toFullWidthString(s) {
+            return s
+                .replace(new RegExp(Object.keys(fullWidthMap).join("|"), 'g'), mt => fullWidthMap[mt] || mt)
+                .replace(/[!-~]/g, fullwidthChar => String.fromCharCode(fullwidthChar.charCodeAt(0) + 0xfee0));
+        }
+        function toHalfWidthString(s) {
+            return s.replace(/[！-～]/g, halfwidthChar => String.fromCharCode(halfwidthChar.charCodeAt(0) - 0xfee0));
+        }
+        function fixHalfwidth(s) {
+            return s.replace(/＆＃[０-９]+；/g, mt => toHalfWidthString(mt));
+        }
+
+        function fixHtmlTag(s) {
+            return s.replace("＜ｈ１＞", '<h1>')
+                .replace("＜／ｈ１＞", '</h1>')
+        }
+
+        function chunkArray(array, size) {
+            const chunks = [];
+            array = Array.from(array);
+            for (let i = 0; i < array.length; i += size) {
+                chunks.push(array.slice(i, i + size));
+            }
+            return chunks;
+        }
+
+        function unescapeHTML(html) {
+            div = htmlUnescaper;
+            div.innerHTML = html;
+            return ("innerText" in div) ? div.innerText : div.textContent; // IE | FF
+        }
+
+        function paging(s){
+            // Assume h1 get 2 lines.
+            s = s.replaceAll("＜／ｈ１＞", '＜／ｈ１＞\n\n\n');
+            const lines = s.split("\n");
+            const cuttedLines = [];
+            for (let line of lines){
+                line = unescapeHTML(line);
+                let chunkedLines = chunkArray(line, CHAR_IN_LINE).map(line => line.join(''));
+                if (chunkedLines.length == 0){
+                    chunkedLines = [line];
+                }
+                cuttedLines.push(...chunkedLines);
+            }
+            // .replaceAll("＜／ｈ１＞<br><br>", "＜／ｈ１＞")
+            const pages = chunkArray(cuttedLines, LINE_IN_PAGE).map(lines => lines.join("<br>").replaceAll("＜／ｈ１＞<br><br>", "＜／ｈ１＞"));
+            return pages
+        }
+
+
+
+        const conveter = new Converter();
+        const codeMapFetching = fetch("/extension/code_map.json").then(res => res.json());
+        const hanvietFetching = fetch("/extension/hanviet_dict.json").then(res => res.json());
+        Promise.all([codeMapFetching, hanvietFetching]).then(values => {
+            conveter.updateResources(values[0], values[1]);
+        });
+
+        const textInput = document.getElementById("textInput");
+        const textOutput = document.getElementById("textOutput");
+        const useHantuCheckBox = document.getElementById("useHantuCheckBox");
+        const fontSelect = document.getElementById("fontSelect");
+
+
+        function convertInput() {
+            localStorage.setItem('inputText', textInput.value);
+            const convertedText = fixHalfwidth(toFullWidthString(conveter.convert(textInput.value, useHantuCheckBox.checked)));
+            const pages = paging(convertedText);
+            const pageTemplate = "<div class='page'>$$<div class='pageNum'>$pageNum</div></div>";
+            const startPage = 1;
+            textOutput.innerHTML = pages.map((page, index) => {
+                return pageTemplate
+                    .replace("$$", fixHtmlTag(page))
+                    .replace("$pageNum", index + startPage)
+            }).join('');
+        }
+
+        textInput.addEventListener('keyup', () => convertInput());
+        textInput.addEventListener('change', () => convertInput());
+        useHantuCheckBox.addEventListener('change', () => convertInput());
+        conveter.ready.then(() => {
+            textInput.value = localStorage.getItem('inputText') || 'Xin chào 越南 from Z。'
+            convertInput();
+        });
+        fontSelect.addEventListener('change', () => {
+            textOutput.classList = fontSelect.value;
+        })
+
+    </script>
+</body>
+
+</html>
