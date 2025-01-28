@@ -226,8 +226,8 @@
 
 
         const conveter = new Converter();
-        const codeMapFetching = fetch("/extension/code_map.json").then(res => res.json());
-        const hanvietFetching = fetch("/extension/hanviet_dict.json").then(res => res.json());
+        const codeMapFetching = fetch("../extension/code_map.json").then(res => res.json());
+        const hanvietFetching = fetch("../extension/hanviet_dict.json").then(res => res.json());
         Promise.all([codeMapFetching, hanvietFetching]).then(values => {
             conveter.updateResources(values[0], values[1]);
         });
