@@ -11,7 +11,10 @@
 
 ## Quy tắc
 
-![Rule](docs/rule.png)
+![Rule](docs/rule1.svg)
+![Rule](docs/rule2.svg)
+
+<!-- ![Rule](docs/rule.png) -->
 
 ## Ví dụ
 
