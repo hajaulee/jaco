@@ -110,6 +110,57 @@ class Converter {
         return convertedText;
     }
 
+    async convertAsync(text, useHanviet) {
+        const convertLineMapper = (line) => {
+            return this.convert(line, useHanviet)
+        }
+
+        const convertedLines = await this.processLargeLoop(
+            text.split("\n"), convertLineMapper
+        )
+
+        return convertedLines.join('\n')
+    }
+
+    processLargeLoop(items, mapper) {
+        if (this.processLargeLoopTimer){
+            clearTimeout(this.processLargeLoopTimer);
+        }
+
+        return new Promise((resolve) => {
+            let index = 0;
+            let results = [];
+    
+            const processChunk = () => {
+                const start = performance.now();
+    
+                while (index < items.length) {
+                    results.push(mapper(items[index])); // Aggregate computation
+                    index++;
+    
+                    // Break loop if processing time exceeds ~16ms
+                    if (performance.now() - start > 16) {
+                        this.processLargeLoopTimer = setTimeout(processChunk);
+                        
+                        return;
+                    }
+
+                    // Log progress
+                    if (index % 100 == 0){
+                        console.log(`Processing step ${index}/${items.length}.`);
+                    }
+                }
+                
+                // Resolve the final result when processing is complete
+                console.log(`Done ${items.length} steps.`);
+                resolve(results);
+            }
+    
+            processChunk();
+        });
+    }
+    
+
     convertWord(word) {
         word = word.toLowerCase();
         

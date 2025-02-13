@@ -185,9 +185,19 @@
             return s.replace(/＆＃[０-９]+；/g, mt => toHalfWidthString(mt));
         }
 
-        function fixHtmlTag(s) {
-            return s.replace("＜ｈ１＞", '<h1>')
-                .replace("＜／ｈ１＞", '</h1>')
+        function fixPageContent(s) {
+            const replacementDict = {
+                "＜ｈ１＞": '<h1>',
+                "＜／ｈ１＞": '</h1>',
+                "、 ": "、",
+                "。 ": "。"
+            }
+            return replaceWithDictionary(s, replacementDict);
+        }
+
+        function replaceWithDictionary(str, dict) {
+            const regex = new RegExp(Object.keys(dict).join("|"), "g");
+            return str.replace(regex, (match) => dict[match] || match);
         }
 
         function chunkArray(array, size) {
@@ -238,15 +248,16 @@
         const fontSelect = document.getElementById("fontSelect");
 
 
-        function convertInput() {
+        async function convertInput() {
             localStorage.setItem('inputText', textInput.value);
-            const convertedText = fixHalfwidth(toFullWidthString(conveter.convert(textInput.value, useHantuCheckBox.checked)));
+            const rawConvertedText = await conveter.convertAsync(textInput.value, useHantuCheckBox.checked);
+            const convertedText = fixHalfwidth(toFullWidthString(rawConvertedText));
             const pages = paging(convertedText);
-            const pageTemplate = "<div class='page'>$$<div class='pageNum'>$pageNum</div></div>";
+            const pageTemplate = "<div class='page'>$pageContent<div class='pageNum'>$pageNum</div></div>";
             const startPage = 1;
             textOutput.innerHTML = pages.map((page, index) => {
                 return pageTemplate
-                    .replace("$$", fixHtmlTag(page))
+                    .replace("$pageContent", fixPageContent(page))
                     .replace("$pageNum", index + startPage)
             }).join('');
         }
