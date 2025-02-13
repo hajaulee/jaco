@@ -4,6 +4,7 @@ class Converter {
         this.cache = {};
         this.codeMap = {};
         this.hanvietDict = {};
+        this.useChuam = false;
         this.resolveReady = () => {};
 
         this.ready = new Promise((resolve, reject) => {
@@ -89,11 +90,21 @@ class Converter {
             if (useHanviet){
                 convertedWord = this.hanvietDict[word.replace(/_/g, ' ').toLowerCase()] ?? word;
             }
-            if (convertedWord == word){
+            if (convertedWord != word){
+                if (this.useChuam){
+                    const chuam = this.convert(word.replace(/_/g, ' ').toLowerCase(), false);
+                    const chuamChars = this.splitHTMLEntities(chuam);
+                    const hantuWithChuam = convertedWord.split('').map((char, index) => char + "[chuam;" +  (chuamChars[index] || '') + "chuam;]").join('')
+                    convertedWord = "[hantu;" + hantuWithChuam + "hantu;]";
+                }
+            } else {
                 convertedWord = this.convertWord(word);
             }
-            
-            const currentConverted = convertedWord != word.toLowerCase();
+
+            // Mark hantu as converted to remove space
+            const isHantu = this.isJapaneseOrChinese(word);
+            const currentConverted = convertedWord != word.toLowerCase() || isHantu;
+
             if (currentConverted){
                 if (previousConverted){
                     convertedText = convertedText.replace(/^\ +|\ +$/g, "");
@@ -158,6 +169,17 @@ class Converter {
     
             processChunk();
         });
+    }
+
+    isJapaneseOrChinese(char) {
+        const japaneseRegex = /[\u3040-\u30FF\u31F0-\u31FF]/; // Hiragana, Katakana, Katakana Extensions
+        const chineseRegex = /[\u4E00-\u9FFF]/; // Chinese and Kanji characters
+    
+        return japaneseRegex.test(char) || chineseRegex.test(char);
+    }
+
+    splitHTMLEntities(str) {
+        return str.match(/&#\d+;/g) || [];
     }
     
 
