@@ -4,6 +4,7 @@ class Converter {
         this.cache = {};
         this.codeMap = {};
         this.hanvietDict = {};
+        this.chuamDict = {};
         this.useChuam = false;
         this.resolveReady = () => {};
 
@@ -92,10 +93,10 @@ class Converter {
             }
             if (convertedWord != word){
                 if (this.useChuam){
-                    const chuam = this.convert(word.replace(/_/g, ' ').toLowerCase(), false);
-                    const chuamChars = this.splitHTMLEntities(chuam);
-                    const hantuWithChuam = convertedWord.split('').map((char, index) => char + "[chuam;" +  (chuamChars[index] || '') + "chuam;]").join('')
-                    convertedWord = "[hantu;" + hantuWithChuam + "hantu;]";
+                    const hantuList = Array.from(convertedWord);
+                    const chuamList = word.replace(/_/g, ' ').toLowerCase().split(' ');
+                    convertedWord = this.attachChuam(hantuList, chuamList);
+                    
                 }
             } else {
                 convertedWord = this.convertWord(word);
@@ -103,6 +104,12 @@ class Converter {
 
             // Mark hantu as converted to remove space
             const isHantu = this.isJapaneseOrChinese(word);
+            if (isHantu){
+                const [hantuList, chuamList] = this.getChuam(word);
+                if (this.useChuam){
+                    convertedWord = this.attachChuam(hantuList, chuamList);
+                }
+            }
             const currentConverted = convertedWord != word.toLowerCase() || isHantu;
 
             if (currentConverted){
@@ -224,6 +231,38 @@ class Converter {
         return marked.join("")
     }
 
+    getChuam(text) {
+        const words = Array.from(text);
+        
+        const marked = [];
+        const chuamList = [];
+        let i = 0;
+        while (i < words.length) {
+            let word = words[i];
+            let testWordNumbers = [4, 3, 2, 1];
+            for (const wordNum of testWordNumbers) {
+                let testingWord = words.slice(i, i + wordNum).join('')
+                
+                if (this.chuamDict[testingWord]) {
+                    word = testingWord;
+                    i += wordNum - 1;
+                    break;
+                }
+            }
+            marked.push(word)
+            chuamList.push(this.chuamDict[word] || '')
+            i++;
+        }
+        
+        return [marked.join('').split(''), chuamList.join(' ').split(' ')]
+    }
+
+    attachChuam(hantuList, chuamList) {
+        const convertedChuamList = chuamList.map(chuam => this.convertWord(chuam));
+        const hantuWithChuam = hantuList.map((hantu, index) => hantu + "[chuam;" +  (convertedChuamList[index] || '') + "chuam;]").join('')
+        return "[hantu;" + hantuWithChuam + "hantu;]";
+    }
+
     splitSpell(word){
         let pd = "";
         let va = "";
@@ -321,7 +360,12 @@ class Converter {
 
     updateResources(codeMap, hanvietDict){
         this.codeMap = codeMap;
-        this.hanvietDict = hanvietDict;        
+        this.hanvietDict = hanvietDict;
+        
+        Object.keys(this.hanvietDict).forEach(key => {
+            this.chuamDict[this.hanvietDict[key]] = key;
+        });
+        
         this.resolveReady(true);
         return this.ready;
     }
