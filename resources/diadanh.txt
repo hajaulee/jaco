@@ -20,19 +20,18 @@ hưng yên    興安     hưng yên
 hòa bình    和平     hòa bình
 hà nam    河南     hà nam
 thái bình    太平     thái bình
-ninh bình    寧平     ninh bình
+ninh bình    寧平     ninh bình
 nam định    南定     nam định
 thanh hóa    清化     thanh hóa
 hà tĩnh    河静     hà tĩnh
 quảng bình    広平     quảng bình
 quảng trị    広治     quảng trị
 hồ chí minh    胡志明    hồ chí minh
-thừa thiên huế    順化     thừa thiên huế
 quảng nam    広南     quảng nam
-bình định    平定     bình định
+bình định    平定     bình định
 gia lai    嘉萊     gia lai
 phú yên    富安     phú yên
-đắk nông    得農     đắk nông
+đắk nông    得農     đắk nông
 khánh hòa    慶和     khánh hòa
 ninh thuận    寧順     ninh thuận
 lâm đồng    林同     lâm đồng
@@ -48,5 +47,5 @@ an giang    安江     an giang
 kiên giang    堅江     kiên giang
 vĩnh long    永竜     vĩnh long
 trà vinh    茶栄     trà vinh
-hậu giang    後江     hậu giang
+hậu giang    後江     hậu giang
 bạc liêu    薄遼     bạc liêu
