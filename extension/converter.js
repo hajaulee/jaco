@@ -358,13 +358,18 @@ class Converter {
         return str.substring(0,index) + chr + str.substring(index+1);
     }
 
-    updateResources(codeMap, hanvietDict){
+    updateResources(codeMap, hanvietDict, chuamDict){
         this.codeMap = codeMap;
         this.hanvietDict = hanvietDict;
         
         Object.keys(this.hanvietDict).forEach(key => {
             this.chuamDict[this.hanvietDict[key]] = key;
         });
+
+        this.chuamDict = {
+            ...this.chuamDict,
+            ...chuamDict
+        }
         
         this.resolveReady(true);
         return this.ready;

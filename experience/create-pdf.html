@@ -340,10 +340,11 @@
         function paging(s){
             // Assume h1 get 2 lines.
             s = s.replaceAll("＜／ｈ１＞", '＜／ｈ１＞\n\n\n');
-            const lines = s.split("\n");
+            const lines = s.split("\n\n"); // Empty line in source as new line
             const cuttedLines = [];
             for (let line of lines){
                 line = unescapeHTML(line);
+                line = line.replace(/\n/g, ''); // Remove single line
                 let chunkedLines = chunkLine(line, CHAR_IN_LINE).map(chars => chars.join(''));
                 if (chunkedLines.length == 0){
                     chunkedLines = [line];
@@ -360,8 +361,9 @@
         const conveter = new Converter();
         const codeMapFetching = fetch("../extension/code_map.json").then(res => res.json());
         const hanvietFetching = fetch("../extension/hanviet_dict.json").then(res => res.json());
-        Promise.all([codeMapFetching, hanvietFetching]).then(values => {
-            conveter.updateResources(values[0], values[1]);
+        const chuamFetching = fetch("../extension/chuam_dict.json").then(res => res.json());
+        Promise.all([codeMapFetching, hanvietFetching, chuamFetching]).then(values => {
+            conveter.updateResources(values[0], values[1], values[2]);
         });
 
         const textInput = document.getElementById("textInput");
