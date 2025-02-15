@@ -177,7 +177,7 @@
     </script>
     <script>
         const LINE_IN_PAGE = 16
-        const CHAR_IN_LINE = 40
+        const CHAR_IN_LINE = 35
         const fullWidthMap = {
             ",": "、",
             ".": "。"
@@ -339,7 +339,7 @@
 
         function paging(s){
             // Assume h1 get 2 lines.
-            s = s.replaceAll("＜／ｈ１＞", '＜／ｈ１＞\n\n\n');
+            s = s.replaceAll("＜／ｈ１＞", '＜／ｈ１＞\n\n\n\n\n\n');
             const lines = s.split("\n\n"); // Empty line in source as new line
             const cuttedLines = [];
             for (let line of lines){
