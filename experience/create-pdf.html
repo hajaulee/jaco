@@ -409,6 +409,8 @@
                     .replace("$pageContent", fixPageContent(page))
                     .replace("$pageNum", index + startPage)
             }).join('');
+            textOutput.innerHTML += `<img src="../../docs/rule-1.svg" style="width: 100%">`;
+            textOutput.innerHTML += `<img src="../../docs/rule-2.svg" style="width: 100%">`;
         }
 
         textInput.addEventListener('keyup', () => convertInput());
