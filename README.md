@@ -11,8 +11,8 @@
 
 ## Quy tắc
 
-![Rule](docs/rule1.svg)
-![Rule](docs/rule2.svg)
+![Rule](docs/rule-1.svg)
+![Rule](docs/rule-2.svg)
 
 <!-- ![Rule](docs/rule.png) -->
 
