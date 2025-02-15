@@ -182,16 +182,20 @@
             ",": "、",
             ".": "。"
         };
+        const S_HANTU = "［ｈａｎｔｕ；"
+        const E_HANTU = "ｈａｎｔｕ；］"
+        const S_CHUAM = "［ｃｈｕａｍ；"
+        const E_CHUAM = "ｃｈｕａｍ；］"
 
         const tagDict = {
             "＜ｈ１＞": '<h1>',
             "＜／ｈ１＞": '</h1>',
             "、 ": "、",
             "。 ": "。",
-            "［ｈａｎｔｕ；": '<ruby>',
-            "ｈａｎｔｕ；］": "</ruby>",
-            "［ｃｈｕａｍ；": "<rt>",
-            "ｃｈｕａｍ；］": "</rt>"
+            [S_HANTU]: '<ruby>',
+            [E_HANTU]: "</ruby>",
+            [S_CHUAM]: "<rt>",
+            [E_CHUAM]: "</rt>"
         };
 
         function toFullWidthString(s) {
@@ -253,7 +257,7 @@
                     
                     const totalTagCharCount = sumOf(tagsInSlice.map(tag => tagLengthMap[tag]));
                     // Simple case chuam has 1 letter. TODO: case chuam multi letters
-                    const totalOfChuam = findAllIndexes(tagsInSlice, "［ｃｈｕａｍ；").length;
+                    const totalOfChuam = findAllIndexes(tagsInSlice, S_CHUAM).length;
                     
                     if (sliced.length - totalTagCharCount - totalOfChuam >= size + longestTag){
                         break;
@@ -262,14 +266,30 @@
                 }
 
                 // Simple case chuam has 1 letter. TODO: case chuam multi letters
-                const ranges = tagsInSlice.map((tag, _index) => [tagsIndexesInSlice[_index], tag == "［ｃｈｕａｍ；" ? tagLengthMap[tag] + 1 : tagLengthMap[tag]]);
+                const ranges = tagsInSlice.map((tag, _index) => [tagsIndexesInSlice[_index], tag == S_CHUAM ? tagLengthMap[tag] + 1 : tagLengthMap[tag]]);
                 
                 const binaryArray = createBinaryArray(ranges, lookAhead);
                 const fitSize = findCumsumIndex(binaryArray, size) + 1;
                 
+                sliced = array.slice(i, i + fitSize);
+                [tagsInSlice, tagsIndexesInSlice] = findKeysInText(sliced.join(''), tagNames);
 
-                chunks.push(array.slice(i, i + fitSize));
+                // Add hantu open/close tag when break middle ruby tag
+                const hantuOpenIndexes = findAllIndexes(tagsInSlice, S_HANTU);
+                const hantuCloseIndexes = findAllIndexes(tagsInSlice, E_HANTU);
+                
+                if (hantuOpenIndexes.length > hantuCloseIndexes.length){
+                    // Miss close tag
+                    sliced = sliced.concat(Array.from(E_HANTU));
+                } else if (hantuOpenIndexes.length < hantuCloseIndexes.length) {
+                    // Miss open tag
+                    sliced = Array.from(S_HANTU).concat(sliced);
+                } else if (hantuCloseIndexes.length > 0 && hantuOpenIndexes[0] > hantuCloseIndexes[0]){
+                    // Miss open tag and close tag
+                    sliced = Array.from(S_HANTU).concat(sliced).concat(Array.from(E_HANTU));
+                }
 
+                chunks.push(sliced);
                 i += fitSize;
                 
             }
@@ -305,16 +325,19 @@
         }
 
         function findKeysInText(text, keys) {
-            let foundIndexes = []
-            let foundKeys = [];
-            
+            const foundResults = [];
             keys.forEach(key => {
-                const indexes = findAllIndexes(text, key);
-                if (indexes.length) {
-                    foundIndexes.push(...indexes);
-                    foundKeys.push(...Array(indexes.length).fill(key));
-                }
+                findAllIndexes(text, key).forEach(index => {
+                    foundResults.push({key, index});
+                });
             });
+
+            // Sort based on index
+            foundResults.sort((a, b) => a.index - b.index);
+
+            // Extract sorted values
+            const foundKeys = foundResults.map(item => item.key);
+            const foundIndexes = foundResults.map(item => item.index);
 
             return [foundKeys, foundIndexes];
         }
