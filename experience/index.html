@@ -1,0 +1,29 @@
+<html>
+  <body>
+    <script>
+        const USER = 'hajaulee'
+        const REPO = 'jaco';
+        
+        let pathParts = location.pathname.split("/");
+        if (pathParts[0] == "/" + REPO){
+            pathParts = pathParts.slice(1);
+        }
+        if (pathParts[pathParts.length - 1].endsWith("html")){
+            pathParts = pathParts.slice(0, -1)
+        }
+
+      (async () => {
+        const response = await fetch(`https://api.github.com/repos/${USER}/${REPO}/contents/` + pathParts.join('/'));
+        const data = await response.json();
+        let htmlString = '<ul>';
+        
+        for (let file of data) {
+          htmlString += `<li><a href="https://${USER}.github.io/${REPO}/${file.path}">${file.name}</a></li>`;
+        }
+
+        htmlString += '</ul>';
+        document.getElementsByTagName('body')[0].innerHTML = htmlString;
+      })()
+    </script>
+  <body>
+</html>
