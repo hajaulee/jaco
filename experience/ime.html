@@ -78,9 +78,11 @@
             padding: 6px 14px;
             font-size: 16px;
             cursor: pointer;
+            min-height: 54px;
+            min-width: 41px;
         }
 
-        button>* {
+        button > * {
             pointer-events: none;
         }
 
@@ -101,13 +103,19 @@
             flex: auto;
         }
 
+        #ShiftLeft {
+            width: 54px;
+            font-size: 29px;
+        }
+
         #Enter {
             background: #2266f5;
             color: white;
             border: 0;
-            border-radius: 1em;
-            width: 3.5em;
+            border-radius: 16px;
+            width: 69px;
             font-weight: bold;
+            font-size: 29px;
         }
 
         .press {
@@ -599,7 +607,7 @@
 
                 <!-- Row 3 -->
                 <div class="keyboard-row keyboard-row-full">
-                    <button id="ShiftLeft">⬆</button>
+                    <button id="ShiftLeft">⇧</button>
                     <button id="KeyZ">Z</button>
                     <button id="KeyX">X</button>
                     <button id="KeyC">C</button>
