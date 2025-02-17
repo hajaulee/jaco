@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IME</title>
+    <style>
+        :root {
+            --keyboard-scale: 1;
+        }
+
+
+        @font-face {
+            font-family: "HoufRegular";
+            src: url("https://hajaulee.github.io/Houf-Jaco-Regular-Script/new_fonts/ttf/HoufRegularScript-Light.ttf");
+        }
+
+        @font-face {
+            font-family: "sanjikaishu";
+            src: url("https://hajaulee.github.io/Houf-Jaco-Regular-Script/new_fonts/ttf/SanJiKaiShu-2.ttf");
+        }
+
+        @font-face {
+            font-family: "ZiTiGuanJiaKaiTi";
+            src: url("https://hajaulee.github.io/Houf-Jaco-Regular-Script/new_fonts/ttf/ZiTiGuanJiaKaiTi-1.ttf");
+        }
+
+        @font-face {
+            font-family: 'VinaChar';
+            src: local('Arial');
+            unicode-range: U+0020-007F, U+00A0-00FF, U+0100-017F, U+0180-024F, U+1E00-1EFF, U+0300-036F;
+        }
+
+        .regular-font {
+            font-family: 'VinaChar', 'HoufRegular', 'sanjikaishu', 'ZiTiGuanJiaKaiTi', Verdana, sans-serif !important;
+        }
+
+        #textInput {
+            width: 80%;
+            height: 200px;
+            padding: 0.5em;
+            font-size: 26px;
+        }
+
+        .keyboard-container {
+            width: 510px;
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            translate: -50% 0;
+            transform: scale(var(--keyboard-scale));
+            transform-origin: center bottom;
+        }
+
+        .keyboard {
+            background-color: white;
+            border: 1px solid gray;
+            border-radius: 5px;
+            width: calc(100% - 1em);
+            margin: auto;
+            padding: 0.5em;
+            text-align: center;
+        }
+
+        .keyboard-row {
+            display: flex;
+            margin-top: 0.3em;
+            justify-content: space-evenly;
+        }
+
+        .keyboard-row-full {
+            justify-content: space-between;
+            gap: 0.5em;
+        }
+
+        button {
+            padding: 2px 14px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button>* {
+            pointer-events: none;
+        }
+
+        button>img {
+            width: 0.6em;
+            height: 1.5em;
+        }
+
+        .va-btn {
+            padding: 2px 11px;
+        }
+
+        .va-btn>img {
+            width: 0.9em;
+        }
+
+        .space {
+            flex: auto;
+        }
+
+        #Enter {
+            background: #2266f5;
+            color: white;
+            border: 0;
+            border-radius: 1em;
+            width: 3.5em;
+            font-weight: bold;
+        }
+
+        .press {
+            background-color: green;
+        }
+    </style>
+    <script>
+        class JacoKeyBoardPdState {
+            name = "pd";
+            cssClass = '';
+            layout = {
+                "Q": "11_qu.svg",
+                "W": "11_ng_fix.svg",
+                "E": "11_ch.svg",
+                "R": "11_r.svg",
+                "T": "11_t.svg",
+                "Y": "11_tr.svg",
+                "U": "11_th.svg",
+                "I": "11_nh.svg",
+                "O": "11_-.svg",
+                "P": "11_p.svg",
+
+                "A": "",
+                "S": "11_s.svg",
+                "D": "11_dd.svg",
+                "F": "11_ph.svg",
+                "G": "11_g.svg",
+                "H": "11_h.svg",
+                "J": "11_gi.svg",
+                "K": "11_kh_fix.svg",
+                "L": "11_l.svg",
+
+                "Z": "11_d.svg",
+                "X": "11_x.svg",
+                "C": "11_c.svg",
+                "V": "11_v.svg",
+                "B": "11_b.svg",
+                "N": "11_n.svg",
+                "M": "11_m.svg"
+            }
+
+            constructor() {
+                Object.keys(this.layout).filter(key => this.layout[key]).forEach(key => {
+                    this.layout[key] = "https://hajaulee.github.io/jaco-regular-script-font-src/phuamdau/" + this.layout[key];
+                })
+            }
+        }
+
+        class JacoKeyBoardVaState {
+            name = "va";
+            cssClass = 'va-btn';
+            layout = {
+                "Q": "12_aw.svg",
+                "W": "12_aa.svg",
+                "E": "11_e.svg",
+                "R": "11_ee.svg",
+                "T": "11_ow_fix.svg",
+                "Y": "11_uw.svg",
+                "U": "11_u.svg",
+                "I": "11_i.svg",
+                "O": "11_o.svg",
+                "P": "11_oo.svg",
+
+                "A": "11_a.svg",
+                "S": "11_ai.svg",
+                "D": "11_ao.svg",
+                "F": "11_eo.svg",
+                "G": "12_uwow.svg",
+                "H": "12_uyee.svg",
+                "J": "12_uoo.svg",
+                "K": "12_iee.svg",
+                "L": "11_ooi.svg",
+
+                "Z": "11_aau.svg",
+                "X": "11_eeu.svg",
+                "C": "11_uwowi.svg",
+                "V": "11_ua.svg",
+                "B": "11_ui.svg",
+                "N": "11_ieeu.svg",
+                "M": "11_oa.svg"
+            }
+
+            constructor() {
+                Object.keys(this.layout).filter(key => this.layout[key]).forEach(key => {
+                    this.layout[key] = "https://hajaulee.github.io/jaco-regular-script-font-src/van/" + this.layout[key];
+                })
+            }
+        }
+
+        class JacoKeyBoardVaShiftState {
+            name = "va-shift";
+            cssClass = 'va-btn';
+
+            layout = {
+                "Q": "11_au.svg",
+                "W": "12_uaa.svg",
+                "E": "11_eeu.svg",
+                "R": "11_ee.svg",
+                "T": "11_uow.svg",
+                "Y": "11_uy.svg",
+                "U": "11_uwowu.svg",
+                "I": "11_ia.svg",
+                "O": "11_o.svg",
+                "P": "11_owi.svg",
+
+                "A": "11_a.svg",
+                "S": "11_aay.svg",
+                "D": "11_uaay.svg",
+                "F": "11_uya.svg",
+                "G": "11_uwa.svg",
+                "H": "11_uee.svg",
+                "J": "11_oe_fix.svg",
+                "K": "11_oi.svg",
+                "L": "12_oaw.svg",
+
+                "Z": "11_ay.svg",
+                "X": "11_uwi.svg",
+                "C": "11_uyu.svg",
+                "V": "11_uooi.svg",
+                "B": "11_iu.svg",
+                "N": "11_oai.svg",
+                "M": "11_oay.svg"
+            }
+
+            constructor() {
+                Object.keys(this.layout).filter(key => this.layout[key]).forEach(key => {
+                    this.layout[key] = "https://hajaulee.github.io/jaco-regular-script-font-src/van/" + this.layout[key];
+                })
+            }
+        }
+
+        class JacoKeyBoardDtPcState {
+            name = "dtpc";
+            cssClass = 'va-btn';
+
+            layout = {
+                "Q": "",
+                "W": "",
+                "E": "",
+                "R": "11_hoi.svg",
+                "T": "12_t.svg",
+                "Y": "",
+                "U": "",
+                "I": "",
+                "O": "",
+                "P": "12_p.svg",
+
+                "A": "",
+                "S": "11_sac.svg",
+                "D": "",
+                "F": "11_huyen.svg",
+                "G": "12_ng.svg",
+                "H": "12_ch.svg",
+                "J": "11_nang.svg",
+                "K": "",
+                "L": "12_nh.svg",
+
+                "Z": "",
+                "X": "11_nga.svg",
+                "C": "12_c.svg",
+                "V": "",
+                "B": "",
+                "N": "12_n.svg",
+                "M": "12_m.svg"
+            }
+
+            constructor() {
+                Object.keys(this.layout).filter(key => this.layout[key]).forEach(key => {
+                    if ("SRXJF".includes(key)) {
+                        this.layout[key] = "https://hajaulee.github.io/jaco-regular-script-font-src/dauthanh/" + this.layout[key];
+                    } else {
+                        this.layout[key] = "https://hajaulee.github.io/jaco-regular-script-font-src/phuamcuoi/" + this.layout[key];
+                    }
+                })
+            }
+        }
+
+        class JacoKeyBoard {
+            pdState = new JacoKeyBoardPdState();
+            vaState = new JacoKeyBoardVaState();
+            vaShiftState = new JacoKeyBoardVaShiftState();
+            dtpcState = new JacoKeyBoardDtPcState()
+            states = [
+                this.pdState,
+                this.vaState,
+                this.vaShiftState,
+                this.dtpcState
+            ];
+            stateIndex = 0;
+            state = this.states[this.stateIndex];
+
+            textEditor = null;
+            codeMap = {};
+            codeWordMap = {};
+
+            dauthanhMap = {
+                huyen: 'f',
+                sac: 's',
+                hoi: 'r',
+                nga: 'x',
+                nang: 'j'
+            }
+
+            handleKey(key) {
+                const oldStateName = this.state.name;
+                let handled = false;
+                // console.log("Handle:", key, ", state:", this.state);
+                if (key.startsWith("Key")) {
+                    const charKey = key.slice(3);
+                    const keyVal = this.state.layout[charKey].split("_")[1]?.split(".")[0];
+                    if (keyVal) {
+
+                        if (this.state.name == 'pd') {
+                            this.addText(this.getChar(keyVal + '_a__'));
+
+                            this.state = this.vaState;
+                        } else if (this.state.name == 'va' || this.state.name == 'va-shift') {
+                            const char = this.getCharAtCursor();
+                            const word = this.codeWordMap[char.codePointAt(0)];
+                            const parts = word.split("_");
+                            parts[1] = keyVal;
+
+                            // for ă, â, uô, ươ,...
+                            if (!this.codeMap[parts.join('_')]) {
+                                parts[2] = 'n';
+                            }
+                            const newWord = parts.join('_');
+
+                            if (this.codeMap[newWord]) {
+                                this.replaceText(this.getChar(newWord), char.length);
+                            }
+
+
+                            this.state = this.dtpcState;
+                        } else if (this.state.name == 'dtpc') {
+                            const char = this.getCharAtCursor();
+                            const word = this.codeWordMap[char.codePointAt(0)];
+                            const parts = word.split("_");
+
+                            if (this.dauthanhMap[keyVal]) {
+                                if (this.dauthanhMap[keyVal] == parts[3]) {
+                                    parts[3] = ''
+                                } else {
+                                    parts[3] = this.dauthanhMap[keyVal];
+                                }
+                            } else {
+                                parts[2] = keyVal
+                            }
+                            const newWord = parts.join('_');
+
+                            if (this.codeMap[newWord]) {
+                                this.replaceText(this.getChar(newWord), char.length);
+                            }
+                        }
+                    }
+                    handled = true;
+                } else if (key == "ShiftLeft") {
+                    if (this.state.name == 'va') {
+                        this.state = this.vaShiftState;
+                    } else if (this.state.name == 'va-shift') {
+                        this.state = this.vaState;
+                    }
+                    handled = true;
+                } else if (key == "Space") {
+                    if (this.state.name != 'pd') {
+                        this.state = this.pdState;
+                    } else {
+                        this.addText(' ')
+                    }
+                    handled = true;
+                } else if (key == 'Backspace') {
+                    const start = this.textEditor.selectionStart;
+                    const currentChar = [...this.textEditor.value.substring(start - 12, start)].slice(-1)[0];
+                    this.replaceText('', currentChar.length);
+                    this.state = this.pdState;
+                    handled = true;
+                } else if (['Comma', 'Period', 'Enter'].includes(key)){
+                    this.addText({Comma: ',', Period: '.', Enter: '\n'}[key]);
+                    this.state = this.pdState;
+                    this.handled = true;
+                }
+
+                if (!handled) {
+                    this.state = this.pdState;
+                }
+
+
+                if (this.state.name != oldStateName) {
+                    this.update();
+                }
+
+                return handled;
+            }
+
+            update() {
+                Object.keys(this.state.layout).forEach(key => {
+                    const keyBtn = document.getElementById('Key' + key);
+                    keyBtn.classList = this.state.cssClass;
+                    keyBtn.innerHTML = `<img src="${this.state.layout[key]}">`;
+                })
+            }
+
+            getChar(word) {
+                return String.fromCodePoint(this.codeMap[word])
+            }
+
+            getCharAtCursor() {
+                if (!this.textEditor) return;
+                // Get current cursor position
+                const start = this.textEditor.selectionStart;
+                return [...this.textEditor.value.substring(start - 12, start)].slice(-1)[0];
+            }
+
+            addText(text) {
+                if (this.textEditor) {
+                    this.insertAtCursor(this.textEditor, text, 0);
+                }
+            }
+
+            replaceText(text, deleteNum) {
+                if (this.textEditor) {
+                    this.insertAtCursor(this.textEditor, text, deleteNum);
+                }
+            }
+
+            insertAtCursor(textarea, text, deleteNum) {
+                if (!textarea) return;
+
+                // Get current cursor position
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+
+                // Insert text at the cursor position
+                let before = textarea.value.substring(0, start);
+                const after = textarea.value.substring(end);
+                if (deleteNum) {
+                    before = before.slice(0, - deleteNum);
+                }
+                textarea.value = before + text + after;
+
+                // Move cursor to after inserted text
+                const newPos = start + text.length;
+                textarea.selectionStart = textarea.selectionEnd = newPos;
+
+                // Dispatch input event to notify changes
+                textarea.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        }
+
+
+        function telexToVietnamese(input) {
+            // Bước 1: Tách chuỗi theo dấu gạch dưới.
+            let parts = input.split('_');
+            let tone = parts[3] || '';
+            if (['c', 't', 'p', 'ch'].includes(parts[2]) && !tone) {
+                tone = 's';
+            }
+
+            // Ghép lại các phần còn lại thành chuỗi cơ bản
+            let text = parts.slice(0, 3).join('');
+
+            // Bước 2: Xử lý biến đổi nguyên âm theo telex.
+            // Ví dụ: "aa" -> "â", "aw" -> "ă", "dd" -> "đ", "oo" -> "ô", "ow" -> "ơ", "uw" -> "ư"
+            text = text.replace(/aa/g, 'â')
+                .replace(/aw/g, 'ă')
+                .replace(/ii/g, 'i')
+                .replace(/dd/g, 'đ')
+                .replace(/oo/g, 'ô')
+                .replace(/ow/g, 'ơ')
+                .replace(/ee/g, 'ê')
+                .replace(/uw/g, 'ư');
+
+            // Bước 3: Áp dụng ký hiệu dấu vào nguyên âm được chọn.
+            // Mapping các dấu cho các nguyên âm.
+            // Theo chuẩn Telex thông thường: 
+            //   s: sắc, f: huyền, r: hỏi, x: ngã, j: nặng
+            // Ở ví dụ này, ta giả sử với chữ "u" nếu dấu là "j" thì dùng dạng "ù" (cùng với huyền 'f')
+            const toneMap = {
+                'a': { s: 'á', f: 'à', r: 'ả', x: 'ã', j: 'ạ' },
+                'ă': { s: 'ắ', f: 'ằ', r: 'ẳ', x: 'ẵ', j: 'ặ' },
+                'â': { s: 'ấ', f: 'ầ', r: 'ẩ', x: 'ẫ', j: 'ậ' },
+                'e': { s: 'é', f: 'è', r: 'ẻ', x: 'ẽ', j: 'ẹ' },
+                'ê': { s: 'ế', f: 'ề', r: 'ể', x: 'ễ', j: 'ệ' },
+                'i': { s: 'í', f: 'ì', r: 'ỉ', x: 'ĩ', j: 'ị' },
+                'o': { s: 'ó', f: 'ò', r: 'ỏ', x: 'õ', j: 'ọ' },
+                'ô': { s: 'ố', f: 'ồ', r: 'ổ', x: 'ỗ', j: 'ộ' },
+                'ơ': { s: 'ớ', f: 'ờ', r: 'ở', x: 'ỡ', j: 'ợ' },
+                'u': { s: 'ú', f: 'ù', r: 'ủ', x: 'ũ', j: 'ụ' },
+                'ư': { s: 'ứ', f: 'ừ', r: 'ử', x: 'ữ', j: 'ự' },
+                'y': { s: 'ý', f: 'ỳ', r: 'ỷ', x: 'ỹ', j: 'ỵ' }
+            };
+
+            if (tone !== '') {
+
+                // Bước 4: Xác định vị trí nguyên âm để gắn dấu.
+                const vowels = 'aăâeêoôơuưiy';
+                const chars = [...text];
+                for (let i = 0; i < vowels.length; i++) {
+                    let index = chars.indexOf(vowels[i]);
+                    if (index != -1) {
+                        chars[index] = toneMap[vowels[i]][tone];
+                        break;
+                    }
+                }
+                text = chars.join('');
+
+            }
+            return text;
+        }
+
+
+        function fitKeyboardSize(){
+            document.documentElement.style.setProperty('--keyboard-scale', Math.min(1, window.innerWidth / 518));
+        }
+
+        function dragElement(elmnt) {
+            console.log(elmnt);
+            
+            elmnt.addEventListener('mousedown', function(e) {
+            // Get the initial mouse cursor position
+            let offsetX = e.clientX - parseInt(window.getComputedStyle(this).left);
+            let offsetY = e.clientY - parseInt(window.getComputedStyle(this).top);
+            console.log("cc");
+            
+
+            const onMouseMove = (e) => {
+                // Calculate the new cursor position
+                const left = e.clientX - offsetX;
+                const top = e.clientY - offsetY;
+                // Set the element's new position
+                this.style.left = `${left}px`;
+                this.style.top = `${top}px`;
+            };
+
+            const onMouseUp = () => {
+                // Remove the event listeners when the mouse button is released
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            };
+
+            // Attach the event listeners
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <div style="text-align: center;">
+        <div>
+            <textarea id="textInput" class="regular-font" placeholder="Xin chào..."></textarea>
+            <div>
+                Nội dung: <span id="quocnguContent"></span>
+            </div>
+        </div>
+        <div class="keyboard-container">
+            <div class="keyboard">
+                <!-- Row 1 -->
+                <div class="keyboard-row keyboard-row-full">
+                    <button id="KeyQ">Q</button>
+                    <button id="KeyW">W</button>
+                    <button id="KeyE">E</button>
+                    <button id="KeyR">R</button>
+                    <button id="KeyT">T</button>
+                    <button id="KeyY">Y</button>
+                    <button id="KeyU">U</button>
+                    <button id="KeyI">I</button>
+                    <button id="KeyO">O</button>
+                    <button id="KeyP">P</button>
+                </div>
+
+                <!-- Row 2 -->
+                <div class="keyboard-row">
+                    <button id="KeyA">A</button>
+                    <button id="KeyS">S</button>
+                    <button id="KeyD">D</button>
+                    <button id="KeyF">F</button>
+                    <button id="KeyG">G</button>
+                    <button id="KeyH">H</button>
+                    <button id="KeyJ">J</button>
+                    <button id="KeyK">K</button>
+                    <button id="KeyL">L</button>
+                </div>
+
+                <!-- Row 3 -->
+                <div class="keyboard-row keyboard-row-full">
+                    <button id="ShiftLeft">⬆</button>
+                    <button id="KeyZ">Z</button>
+                    <button id="KeyX">X</button>
+                    <button id="KeyC">C</button>
+                    <button id="KeyV">V</button>
+                    <button id="KeyB">B</button>
+                    <button id="KeyN">N</button>
+                    <button id="KeyM">M</button>
+                    <button id="Backspace">⌫</button>
+                </div>
+
+                <!-- Row 4 -->
+                <div class="keyboard-row keyboard-row-full">
+                    <button id="Symbol">?123</button>
+                    <button id="Comma">,</button>
+                    <button id="Lang">🌐</button>
+                    <button id="Space" class="space">Space</button>
+                    <button id="Period">.</button>
+                    <button id="Enter">↩</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const keyboard = new JacoKeyBoard();
+        keyboard.textEditor = document.getElementById('textInput');
+        fetch("../extension/code_map.json").then(res => res.json()).then(data => {
+            keyboard.codeMap = data;
+            Object.keys(data).forEach(word => {
+                keyboard.codeWordMap[data[word]] = word;
+            })
+            keyboard.update();
+        })
+
+
+        document.querySelectorAll(".keyboard-row button").forEach(button => {
+            button.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                keyboard.handleKey(e.target.id)
+            })
+        });
+
+
+        
+        dragElement(document.querySelector('.keyboard-container'));
+        document
+            .querySelector('.keyboard-container')
+            .addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+            })
+
+        window.addEventListener('keydown', (e) => {
+            const button = document.getElementById(e.code);
+            if (button) {
+                button.classList.add('press');
+                setTimeout(() => {
+                    button.classList.remove('press');
+                }, 100)
+            }
+            
+            const handled = keyboard.handleKey(e.code, true);
+            if (handled) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+            }
+        });
+
+        document.getElementById('textInput').addEventListener('input', (e) => {
+            const inputText = [...e.target.value].map(w => {
+                if (keyboard.codeWordMap[w.codePointAt(0)]) {
+                    let text = keyboard.codeWordMap[w.codePointAt(0)];
+                    return telexToVietnamese(text) + ' ';
+                } else {
+                    return w;
+                }
+            }).join('');
+            this.document.getElementById('quocnguContent').innerText = inputText;
+        });
+
+        window.addEventListener('resize', () => {
+            fitKeyboardSize()
+        })
+        fitKeyboardSize();
+    </script>
+</body>
+
+</html>
