@@ -294,6 +294,9 @@
         }
 
         class JacoKeyBoard {
+
+            base64TransparentImage = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+
             pdState = new JacoKeyBoardPdState();
             vaState = new JacoKeyBoardVaState();
             vaShiftState = new JacoKeyBoardVaShiftState();
@@ -417,7 +420,7 @@
                     if (this.state.layout[key]){
                         keyBtn.innerHTML = `<img src="${this.state.layout[key]}">`;
                     } else {
-                        keyBtn.innerHTML = '<img src="" alt="">';
+                        keyBtn.innerHTML = `<img src="data:image/png;base64,${this.base64TransparentImage}" alt="">`;
                     }
                 })
             }
