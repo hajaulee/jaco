@@ -4,8 +4,8 @@
         const USER = 'hajaulee'
         const REPO = 'jaco';
         
-        let pathParts = location.pathname.split("/");
-        if (pathParts[0] == "/" + REPO){
+        let pathParts = location.pathname.split("/").slice(1);
+        if (pathParts[0] == REPO){
             pathParts = pathParts.slice(1);
         }
         if (pathParts[pathParts.length - 1].endsWith("html")){
