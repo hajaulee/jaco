@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IME</title>
+    <script src="../extension/converter.js"></script>
     <style>
         :root {
             --keyboard-scale: 1;
@@ -74,6 +75,19 @@
             gap: 0.5em;
         }
 
+        .keyboard-row-scroll {
+            height: 54px;
+            gap: 0.5em;
+            justify-content: left;
+            overflow: auto; /* Keeps scrolling enabled */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE & Edge */
+        }
+
+        /* .keyboard-row-scroll button {
+            font-family: 'VinaChar', 'HoufRegular', 'sanjikaishu', 'ZiTiGuanJiaKaiTi', Verdana, sans-serif !important;
+        } */
+
         button {
             padding: 6px 14px;
             font-size: 16px;
@@ -137,6 +151,10 @@
         </div>
         <div class="keyboard-container">
             <div class="keyboard">
+                <!-- Row Hint -->
+                <div id="hintRow" class="keyboard-row keyboard-row-scroll">
+                </div>
+                
                 <!-- Row 1 -->
                 <div class="keyboard-row keyboard-row-full">
                     <button id="KeyQ">Q</button>
@@ -184,7 +202,7 @@
                     <button id="Lang">🌐</button>
                     <button id="Space" class="space">Space</button>
                     <button id="Period">.</button>
-                    <button id="Enter">↩</button>
+                    <button id="Enter">⏎</button>
                 </div>
             </div>
         </div>
@@ -236,7 +254,7 @@
             name = "va";
             cssClass = 'va-btn';
             layout = {
-                "Q": "12_aw.svg",
+                "Q": "11_ai.svg",
                 "W": "12_aa.svg",
                 "E": "11_e.svg",
                 "R": "11_ee.svg",
@@ -248,7 +266,7 @@
                 "P": "11_oo.svg",
 
                 "A": "11_a.svg",
-                "S": "11_ai.svg",
+                "S": "12_aw.svg",
                 "D": "11_ao.svg",
                 "F": "11_eo.svg",
                 "G": "12_uwow.svg",
@@ -381,6 +399,8 @@
             textEditor = null;
             codeMap = {};
             codeWordMap = {};
+            hantuHints = {};
+            hintList = [];
 
             dauthanhMap = {
                 huyen: 'f',
@@ -394,6 +414,9 @@
                 const oldStateName = this.state.name;
                 let handled = false;
                 // console.log("Handle:", key, ", state:", this.state);
+                if (key.startsWith('Digit') && this.hintList.length){
+                    key = 'Han-' + this.hintList[Number(key.slice(5)) - 1];
+                }
                 if (key.startsWith("Key")) {
                     const charKey = key.slice(3);
                     const keyVal = this.state.layout[charKey].split("_")[1]?.split(".")[0];
@@ -458,16 +481,38 @@
                     }
                     handled = true;
                 } else if (key == 'Backspace') {
-                    const start = this.textEditor.selectionStart;
-                    const currentChar = [...this.textEditor.value.substring(start - 12, start)].slice(-1)[0];
-                    this.replaceText('', currentChar.length);
+                    if (this.textEditor.selectionStart == this.textEditor.selectionEnd){
+                        this.replaceText('', this.getCharAtCursor().length);
+                    } else {
+                        this.replaceText('');
+                    }
                     this.state = this.pdState;
                     handled = true;
                 } else if (['Comma', 'Period', 'Enter'].includes(key)){
                     this.addText({Comma: ',', Period: '.', Enter: '\n'}[key]);
                     this.state = this.pdState;
-                    this.handled = true;
+                    handled = true;
+                } else if (key.startsWith("Han-")){
+                    const hantu = key.slice(4);
+                    const hantuCount = Array.from(hantu).length;
+                    const replaceLength = this.getCharsBeforeCursor(hantuCount).length;
+                    this.replaceText(hantu, replaceLength);
+                    this.state = this.pdState;
+                    handled = true;
                 }
+
+                // Show hint for hantu
+                this.hintList = [];
+                const textsCheckHint = Array.from(this.getCharsBeforeCursor(4));
+                for (let i=Math.min(4, textsCheckHint.length); i > 0;i-- ){
+                    const text = textsCheckHint.slice(-i).join('');
+                    const hintList = this.hantuHints[text] || [];
+                    if (hintList){
+                        this.hintList.push(...hintList);
+                    }
+                }
+                this.updateHint();
+                
 
                 if (!handled) {
                     this.state = this.pdState;
@@ -490,7 +535,17 @@
                     } else {
                         keyBtn.innerHTML = `<img src="data:image/png;base64,${this.base64TransparentImage}" alt="">`;
                     }
-                })
+                });
+
+                this.updateHint();
+                
+            }
+
+            updateHint(){
+                const hintRowContent = this.hintList.map(hint => {
+                    return `<button id="Han-${hint}">${hint}</button>`
+                }).join('\n');
+                document.getElementById('hintRow').innerHTML = hintRowContent;
             }
 
             getChar(word) {
@@ -498,10 +553,14 @@
             }
 
             getCharAtCursor() {
+                return this.getCharsBeforeCursor(1);
+            }
+
+            getCharsBeforeCursor(num = 1) {
                 if (!this.textEditor) return;
                 // Get current cursor position
-                const start = this.textEditor.selectionStart;
-                return [...this.textEditor.value.substring(start - 12, start)].slice(-1)[0];
+                const end = this.textEditor.selectionEnd;
+                return [...this.textEditor.value.substring(end - 12, end)].slice(-num).join('');
             }
 
             addText(text) {
@@ -614,14 +673,11 @@
             document.documentElement.style.setProperty('--keyboard-scale', Math.min(1, window.innerWidth / 518));
         }
 
-        function dragElement(elmnt) {
-            console.log(elmnt);
-            
+        function dragElement(elmnt) {            
             elmnt.addEventListener('mousedown', function(e) {
             // Get the initial mouse cursor position
             let offsetX = e.clientX - parseInt(window.getComputedStyle(this).left);
             let offsetY = e.clientY - parseInt(window.getComputedStyle(this).top);
-            console.log("cc");
             
 
             const onMouseMove = (e) => {
@@ -645,14 +701,26 @@
             });
         }
 
+
+
+        //
+        //  MAIN
+        //
+
         
         const keyboard = new JacoKeyBoard();
         keyboard.textEditor = document.getElementById('textInput');
-        fetch("../extension/code_map.json").then(res => res.json()).then(data => {
+        Promise.all([
+            fetch("../extension/code_map.json").then(res => res.json()),
+            fetch("../experience/hantu_hint.json").then(res => res.json())
+        ]).then(([data, hantuHints]) => {
             keyboard.codeMap = data;
             Object.keys(data).forEach(word => {
                 keyboard.codeWordMap[data[word]] = word;
             })
+
+            keyboard.hantuHints = hantuHints;
+
             keyboard.update();
         })
 
@@ -664,6 +732,13 @@
                 keyboard.handleKey(e.target.id)
             })
         });
+
+        document.getElementById("hintRow").addEventListener('mousedown', (e) => {
+            console.log(e);
+            if (e.target.tagName == 'BUTTON'){
+                keyboard.handleKey(e.target.id);
+            }
+        })
 
 
         
@@ -683,11 +758,17 @@
                     button.classList.remove('press');
                 }, 100)
             }
+
+            let cocKey = (e.altKey || e.metaKey || e.ctrlKey);
+
+            console.log(e);
             
-            const handled = keyboard.handleKey(e.code, true);
-            if (handled) {
-                e.preventDefault();
-                e.stopImmediatePropagation();
+            if (!cocKey){
+                const handled = keyboard.handleKey(e.code, true);
+                if (handled) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                }
             }
         });
 
