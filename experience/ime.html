@@ -9,6 +9,15 @@
     <style>
         :root {
             --keyboard-scale: 1;
+            --primary-light: #8abdff;
+            --primary: #6d5dfc;
+            --primary-dark: #5b0eeb;
+
+            --white: #FFFFFF;
+            --greyLight-1: #E4EBF5;
+            --greyLight-2: #c8d0e7;
+            --greyLight-3: #bec8e4;
+            --greyDark: #9baacf;
         }
 
 
@@ -54,9 +63,9 @@
             transform-origin: center bottom;
         }
 
-        .keyboard {
-            background-color: white;
-            border: 1px solid gray;
+        .keyboard {            
+            background: var(--greyLight-1);
+            border: 1px solid #fafafa;
             border-radius: 5px;
             width: calc(100% - 1em);
             margin: auto;
@@ -76,19 +85,23 @@
         }
 
         .keyboard-row-scroll {
+            padding: 0.3rem;
             height: 54px;
             gap: 0.5em;
             justify-content: left;
-            overflow: auto; /* Keeps scrolling enabled */
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE & Edge */
+            overflow: auto;
+            /* Keeps scrolling enabled */
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* IE & Edge */
         }
 
         /* .keyboard-row-scroll button {
             font-family: 'VinaChar', 'HoufRegular', 'sanjikaishu', 'ZiTiGuanJiaKaiTi', Verdana, sans-serif !important;
         } */
 
-        button {
+        .keyboard button {
             padding: 6px 14px;
             font-size: 16px;
             cursor: pointer;
@@ -99,11 +112,11 @@
             align-items: center;
         }
 
-        button > * {
+        .keyboard button > * {
             pointer-events: none;
         }
 
-        button > img {
+        .keyboard button > img {
             width: 0.6em;
             height: 1.5em;
         }
@@ -125,11 +138,17 @@
             font-size: 29px;
         }
 
+        #Comma {
+            font-weight: bold;
+            font-size: 29px;
+        }
+
+        #Period {
+            font-weight: bold;
+            font-size: 29px;
+        }
+
         #Enter {
-            background: #2266f5;
-            color: white;
-            border: 0;
-            border-radius: 16px;
             width: 69px;
             font-weight: bold;
             font-size: 29px;
@@ -138,6 +157,64 @@
         .press {
             background-color: green;
         }
+
+        /* 
+        START BUTTON THEME  
+        From: https://codepen.io/myacode/pen/PoqQQNM
+        */
+        .keyboard button {
+            background: var(--greyLight-1);
+            border: 0;
+            border-radius: 1rem;
+            box-shadow: 0.3rem 0.3rem 0.6rem var(--greyLight-2), -0.2rem -0.2rem 0.5rem var(--white);
+            justify-self: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+
+            color: var(--greyDark);
+
+            transition: 0.3s ease;
+        }
+
+        .keyboard button img {
+            /* Comute color at: https://codepen.io/sosuke/pen/Pjoqqp */
+            filter: invert(81%) sepia(2%) saturate(5396%) hue-rotate(191deg) brightness(86%) contrast(88%);
+        }
+
+        button.btn_primary {
+            grid-column: 1/2;
+            grid-row: 4/5;
+            background: var(--primary);
+            box-shadow: inset 0.2rem 0.2rem 1rem var(--primary-light), inset -0.2rem -0.2rem 1rem var(--primary-dark), 0.3rem 0.3rem 0.6rem var(--greyLight-2), -0.2rem -0.2rem 0.5rem var(--white);
+            color: var(--greyLight-1);
+        }
+
+        .keyboard button:hover {
+            color: var(--primary);
+        }
+
+        .keyboard button:hover img {
+            filter: invert(30%) sepia(45%) saturate(4102%) hue-rotate(235deg) brightness(114%) contrast(109%);
+        }
+
+        .keyboard button:active {
+            box-shadow: inset 0.2rem 0.2rem 0.5rem var(--greyLight-2), inset -0.2rem -0.2rem 0.5rem var(--white);
+        }
+
+        
+        button.btn_primary:hover {
+            color: var(--white);
+        }
+
+        button.btn_primary:active {
+            box-shadow: inset 0.2rem 0.2rem 1rem var(--primary-dark), inset -0.2rem -0.2rem 1rem var(--primary-light)!important;
+        }
+
+        /* 
+        END BUTTON THEME 
+        */
     </style>
 </head>
 
@@ -154,7 +231,7 @@
                 <!-- Row Hint -->
                 <div id="hintRow" class="keyboard-row keyboard-row-scroll">
                 </div>
-                
+
                 <!-- Row 1 -->
                 <div class="keyboard-row keyboard-row-full">
                     <button id="KeyQ">Q</button>
@@ -202,7 +279,7 @@
                     <button id="Lang">🌐</button>
                     <button id="Space" class="space">Space</button>
                     <button id="Period">.</button>
-                    <button id="Enter">⏎</button>
+                    <button id="Enter" class="btn_primary">⏎</button>
                 </div>
             </div>
         </div>
@@ -414,7 +491,7 @@
                 const oldStateName = this.state.name;
                 let handled = false;
                 // console.log("Handle:", key, ", state:", this.state);
-                if (key.startsWith('Digit') && this.hintList.length){
+                if (key.startsWith('Digit') && this.hintList.length) {
                     key = 'Han-' + this.hintList[Number(key.slice(5)) - 1];
                 }
                 if (key.startsWith("Key")) {
@@ -481,18 +558,18 @@
                     }
                     handled = true;
                 } else if (key == 'Backspace') {
-                    if (this.textEditor.selectionStart == this.textEditor.selectionEnd){
+                    if (this.textEditor.selectionStart == this.textEditor.selectionEnd) {
                         this.replaceText('', this.getCharAtCursor().length);
                     } else {
                         this.replaceText('');
                     }
                     this.state = this.pdState;
                     handled = true;
-                } else if (['Comma', 'Period', 'Enter'].includes(key)){
-                    this.addText({Comma: ',', Period: '.', Enter: '\n'}[key]);
+                } else if (['Comma', 'Period', 'Enter'].includes(key)) {
+                    this.addText({ Comma: ',', Period: '.', Enter: '\n' }[key]);
                     this.state = this.pdState;
                     handled = true;
-                } else if (key.startsWith("Han-")){
+                } else if (key.startsWith("Han-")) {
                     const hantu = key.slice(4);
                     const hantuCount = Array.from(hantu).length;
                     const replaceLength = this.getCharsBeforeCursor(hantuCount).length;
@@ -504,15 +581,15 @@
                 // Show hint for hantu
                 this.hintList = [];
                 const textsCheckHint = Array.from(this.getCharsBeforeCursor(4));
-                for (let i=Math.min(4, textsCheckHint.length); i > 0;i-- ){
+                for (let i = Math.min(4, textsCheckHint.length); i > 0; i--) {
                     const text = textsCheckHint.slice(-i).join('');
                     const hintList = this.hantuHints[text] || [];
-                    if (hintList){
+                    if (hintList) {
                         this.hintList.push(...hintList);
                     }
                 }
                 this.updateHint();
-                
+
 
                 if (!handled) {
                     this.state = this.pdState;
@@ -529,8 +606,8 @@
             update() {
                 Object.keys(this.state.layout).forEach(key => {
                     const keyBtn = document.getElementById('Key' + key);
-                    keyBtn.classList = this.state.cssClass;                    
-                    if (this.state.layout[key]){
+                    keyBtn.classList = this.state.cssClass;
+                    if (this.state.layout[key]) {
                         keyBtn.innerHTML = `<img src="${this.state.layout[key]}">`;
                     } else {
                         keyBtn.innerHTML = `<img src="data:image/png;base64,${this.base64TransparentImage}" alt="">`;
@@ -538,10 +615,10 @@
                 });
 
                 this.updateHint();
-                
+
             }
 
-            updateHint(){
+            updateHint() {
                 const hintRowContent = this.hintList.map(hint => {
                     return `<button id="Han-${hint}">${hint}</button>`
                 }).join('\n');
@@ -623,7 +700,7 @@
                 .replace(/uw/g, 'ư')
                 .replace(/-/g, '');
 
-            if (text.startsWith('iê')){
+            if (text.startsWith('iê')) {
                 text = 'yê' + text.slice(2);
             }
             if (text == 'i') {
@@ -669,35 +746,35 @@
         }
 
 
-        function fitKeyboardSize(){
+        function fitKeyboardSize() {
             document.documentElement.style.setProperty('--keyboard-scale', Math.min(1, window.innerWidth / 518));
         }
 
-        function dragElement(elmnt) {            
-            elmnt.addEventListener('mousedown', function(e) {
-            // Get the initial mouse cursor position
-            let offsetX = e.clientX - parseInt(window.getComputedStyle(this).left);
-            let offsetY = e.clientY - parseInt(window.getComputedStyle(this).top);
-            
+        function dragElement(elmnt) {
+            elmnt.addEventListener('mousedown', function (e) {
+                // Get the initial mouse cursor position
+                let offsetX = e.clientX - parseInt(window.getComputedStyle(this).left);
+                let offsetY = e.clientY - parseInt(window.getComputedStyle(this).top);
 
-            const onMouseMove = (e) => {
-                // Calculate the new cursor position
-                const left = e.clientX - offsetX;
-                const top = e.clientY - offsetY;
-                // Set the element's new position
-                this.style.left = `${left}px`;
-                this.style.top = `${top}px`;
-            };
 
-            const onMouseUp = () => {
-                // Remove the event listeners when the mouse button is released
-                document.removeEventListener('mousemove', onMouseMove);
-                document.removeEventListener('mouseup', onMouseUp);
-            };
+                const onMouseMove = (e) => {
+                    // Calculate the new cursor position
+                    const left = e.clientX - offsetX;
+                    const top = e.clientY - offsetY;
+                    // Set the element's new position
+                    this.style.left = `${left}px`;
+                    this.style.top = `${top}px`;
+                };
 
-            // Attach the event listeners
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mouseup', onMouseUp);
+                const onMouseUp = () => {
+                    // Remove the event listeners when the mouse button is released
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                };
+
+                // Attach the event listeners
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
             });
         }
 
@@ -707,7 +784,7 @@
         //  MAIN
         //
 
-        
+
         const keyboard = new JacoKeyBoard();
         keyboard.textEditor = document.getElementById('textInput');
         Promise.all([
@@ -735,13 +812,13 @@
 
         document.getElementById("hintRow").addEventListener('mousedown', (e) => {
             console.log(e);
-            if (e.target.tagName == 'BUTTON'){
+            if (e.target.tagName == 'BUTTON') {
                 keyboard.handleKey(e.target.id);
             }
         })
 
 
-        
+
         dragElement(document.querySelector('.keyboard-container'));
         document
             .querySelector('.keyboard-container')
@@ -762,8 +839,8 @@
             let cocKey = (e.altKey || e.metaKey || e.ctrlKey);
 
             console.log(e);
-            
-            if (!cocKey){
+
+            if (!cocKey) {
                 const handled = keyboard.handleKey(e.code, true);
                 if (handled) {
                     e.preventDefault();
