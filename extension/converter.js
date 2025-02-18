@@ -250,7 +250,7 @@ class Converter {
                 }
             }
             marked.push(word)
-            chuamList.push(this.chuamDict[word] || '')
+            chuamList.push(this.chuamDict[word]?.[0] || '')
             i++;
         }
         
@@ -363,7 +363,7 @@ class Converter {
         this.hanvietDict = hanvietDict;
         
         Object.keys(this.hanvietDict).forEach(key => {
-            this.chuamDict[this.hanvietDict[key]] = key;
+            this.chuamDict[this.hanvietDict[key]] = [key];
         });
 
         this.chuamDict = {
