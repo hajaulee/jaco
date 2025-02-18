@@ -122,6 +122,71 @@
             background-color: green;
         }
     </style>
+</head>
+
+<body>
+    <div style="text-align: center;">
+        <div>
+            <textarea id="textInput" inputmode="none" class="regular-font" placeholder="Xin chào..."></textarea>
+            <div>
+                Nội dung: <span id="quocnguContent"></span>
+            </div>
+        </div>
+        <div class="keyboard-container">
+            <div class="keyboard">
+                <!-- Row 1 -->
+                <div class="keyboard-row keyboard-row-full">
+                    <button id="KeyQ">Q</button>
+                    <button id="KeyW">W</button>
+                    <button id="KeyE">E</button>
+                    <button id="KeyR">R</button>
+                    <button id="KeyT">T</button>
+                    <button id="KeyY">Y</button>
+                    <button id="KeyU">U</button>
+                    <button id="KeyI">I</button>
+                    <button id="KeyO">O</button>
+                    <button id="KeyP">P</button>
+                </div>
+
+                <!-- Row 2 -->
+                <div class="keyboard-row">
+                    <button id="KeyA">A</button>
+                    <button id="KeyS">S</button>
+                    <button id="KeyD">D</button>
+                    <button id="KeyF">F</button>
+                    <button id="KeyG">G</button>
+                    <button id="KeyH">H</button>
+                    <button id="KeyJ">J</button>
+                    <button id="KeyK">K</button>
+                    <button id="KeyL">L</button>
+                </div>
+
+                <!-- Row 3 -->
+                <div class="keyboard-row keyboard-row-full">
+                    <button id="ShiftLeft">⇧</button>
+                    <button id="KeyZ">Z</button>
+                    <button id="KeyX">X</button>
+                    <button id="KeyC">C</button>
+                    <button id="KeyV">V</button>
+                    <button id="KeyB">B</button>
+                    <button id="KeyN">N</button>
+                    <button id="KeyM">M</button>
+                    <button id="Backspace">⌫</button>
+                </div>
+
+                <!-- Row 4 -->
+                <div class="keyboard-row keyboard-row-full">
+                    <button id="Symbol">?123</button>
+                    <button id="Comma">,</button>
+                    <button id="Lang">🌐</button>
+                    <button id="Space" class="space">Space</button>
+                    <button id="Period">.</button>
+                    <button id="Enter">↩</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         class JacoKeyBoardPdState {
             name = "pd";
@@ -493,7 +558,15 @@
                 .replace(/oo/g, 'ô')
                 .replace(/ow/g, 'ơ')
                 .replace(/ee/g, 'ê')
-                .replace(/uw/g, 'ư');
+                .replace(/uw/g, 'ư')
+                .replace(/-/g, '');
+
+            if (text.startsWith('iê')){
+                text = 'yê' + text.slice(2);
+            }
+            if (text == 'i') {
+                text = 'y'
+            }
 
             // Bước 3: Áp dụng ký hiệu dấu vào nguyên âm được chọn.
             // Mapping các dấu cho các nguyên âm.
@@ -568,73 +641,8 @@
             document.addEventListener('mouseup', onMouseUp);
             });
         }
-    </script>
-</head>
 
-<body>
-    <div style="text-align: center;">
-        <div>
-            <textarea id="textInput" class="regular-font" placeholder="Xin chào..."></textarea>
-            <div>
-                Nội dung: <span id="quocnguContent"></span>
-            </div>
-        </div>
-        <div class="keyboard-container">
-            <div class="keyboard">
-                <!-- Row 1 -->
-                <div class="keyboard-row keyboard-row-full">
-                    <button id="KeyQ">Q</button>
-                    <button id="KeyW">W</button>
-                    <button id="KeyE">E</button>
-                    <button id="KeyR">R</button>
-                    <button id="KeyT">T</button>
-                    <button id="KeyY">Y</button>
-                    <button id="KeyU">U</button>
-                    <button id="KeyI">I</button>
-                    <button id="KeyO">O</button>
-                    <button id="KeyP">P</button>
-                </div>
-
-                <!-- Row 2 -->
-                <div class="keyboard-row">
-                    <button id="KeyA">A</button>
-                    <button id="KeyS">S</button>
-                    <button id="KeyD">D</button>
-                    <button id="KeyF">F</button>
-                    <button id="KeyG">G</button>
-                    <button id="KeyH">H</button>
-                    <button id="KeyJ">J</button>
-                    <button id="KeyK">K</button>
-                    <button id="KeyL">L</button>
-                </div>
-
-                <!-- Row 3 -->
-                <div class="keyboard-row keyboard-row-full">
-                    <button id="ShiftLeft">⇧</button>
-                    <button id="KeyZ">Z</button>
-                    <button id="KeyX">X</button>
-                    <button id="KeyC">C</button>
-                    <button id="KeyV">V</button>
-                    <button id="KeyB">B</button>
-                    <button id="KeyN">N</button>
-                    <button id="KeyM">M</button>
-                    <button id="Backspace">⌫</button>
-                </div>
-
-                <!-- Row 4 -->
-                <div class="keyboard-row keyboard-row-full">
-                    <button id="Symbol">?123</button>
-                    <button id="Comma">,</button>
-                    <button id="Lang">🌐</button>
-                    <button id="Space" class="space">Space</button>
-                    <button id="Period">.</button>
-                    <button id="Enter">↩</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
+        
         const keyboard = new JacoKeyBoard();
         keyboard.textEditor = document.getElementById('textInput');
         fetch("../extension/code_map.json").then(res => res.json()).then(data => {
