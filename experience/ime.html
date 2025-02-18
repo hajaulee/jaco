@@ -529,7 +529,7 @@
                 textarea.value = before + text + after;
 
                 // Move cursor to after inserted text
-                const newPos = start + text.length;
+                const newPos = start + text.length - (deleteNum || 0);
                 textarea.selectionStart = textarea.selectionEnd = newPos;
 
                 // Dispatch input event to notify changes
