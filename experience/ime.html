@@ -139,6 +139,11 @@
             font-size: 29px;
         }
 
+
+        #Backspace {
+            width: 54px;
+        }
+
         #Comma {
             font-weight: bold;
             font-size: 29px;
@@ -489,6 +494,19 @@
                 nang: 'j'
             }
 
+            constructor(){
+                this.preloadKeyImage()
+            }
+
+            preloadKeyImage(){
+                this.states.forEach(state => {
+                      Object.keys(state.layout).forEach(key => {
+                          const image = new Image();
+                          image.src =  state.layout[key];
+                     });
+                });
+           }
+
             handleKey(key) {
                 const oldStateName = this.state.name;
                 let handled = false;
@@ -749,7 +767,7 @@
 
 
         function fitKeyboardSize() {
-            document.documentElement.style.setProperty('--keyboard-scale', Math.min(1, window.innerWidth / 518));
+            document.documentElement.style.setProperty('--keyboard-scale', Math.min(1, window.innerWidth / 510));
         }
 
         function dragElement(elmnt) {
