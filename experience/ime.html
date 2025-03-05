@@ -155,6 +155,16 @@
             }).join('');
             this.document.getElementById('quocnguContent').innerText = inputText;
         });
+
+        document.getElementById('textInput').focus();
+        // Triger mousedown on textInput
+        const event = new MouseEvent("mousedown", {
+            bubbles: true,
+            cancelable: true,
+            view: window
+        });
+
+        textInput.dispatchEvent(event);
     </script>
 </body>
 
