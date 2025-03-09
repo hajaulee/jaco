@@ -12,6 +12,19 @@
             src: url("https://hajaulee.github.io/Houf-Jaco-Maru/new_fonts/ttf/HoufJacoMaru-Light.ttf");
         }
 
+        @font-face {
+            font-family: "HoufRegular";
+            src: url("https://hajaulee.github.io/Houf-Jaco-Regular-Script/new_fonts/ttf/HoufRegularScript-Light.ttf");
+        }
+
+        .jaco-maru-font {
+            font-family: 'JacoMaru', Courier, monospace !important;
+        }
+
+        .regular-font {
+            font-family: 'HoufRegular', Courier, monospace !important;
+        }
+
         .input-text {
             outline: 0;
             width: 100%;
@@ -36,10 +49,14 @@
         }
         
         #textOutput {
-            font-family: 'JacoMaru', Courier, monospace !important;
             font-size: 24px;
             line-break: anywhere;
         }
+
+        #textOutput h1, h2, h3, h4, h5, h6 {
+            font-family: inherit;
+        }
+        
     </style>
     <script src="./extension/converter.js"></script>
 </head>
@@ -49,6 +66,8 @@
         <div class="w3-bar w3-black">
             <button class="w3-bar-item w3-button tablink w3-red" onclick="openTab(event,'Viet')">Tiếng Việt</button>
             <button class="w3-bar-item w3-button tablink" onclick="openTab(event,'Jaco')">Jaco</button>
+            <button class="w3-bar-item w3-button tablink"><a target="_blank" href="https://hajaulee.github.io/jaco/experience/ime.html">IME</a></button>
+            <button class="w3-bar-item w3-button tablink"><a target="_blank" href="https://hajaulee.github.io/jaco/experience/create-pdf.html">Create book</a></button>
             <button class="w3-bar-item w3-button tablink"><a target="_blank" href="https://github.com/hajaulee/jaco">Github</a></button>
         </div>
 
@@ -63,7 +82,11 @@
                 <input type="checkbox" id="useHantuCheckBox">
                     <label for="useHantuCheckBox"> Dùng chữ Hán</label>
                 </input>
-                <div id="textOutput">Hello</div>
+                <select id="fontSelect">
+                    <option value="jaco-maru-font">jaco-maru-font</option>
+                    <option value="regular-font">regular-font</option>
+                </select>
+                <div id="textOutput" class="jaco-maru-font">Hello</div>
             </div>
         </div>
     </div>
@@ -95,6 +118,7 @@
         const textInput = document.getElementById("textInput");
         const textOutput = document.getElementById("textOutput");
         const useHantuCheckBox = document.getElementById("useHantuCheckBox");
+        const fontSelect = document.getElementById("fontSelect");
 
         function convertInput() {
             localStorage.setItem('inputText', textInput.value);
@@ -108,6 +132,9 @@
             textInput.value = localStorage.getItem('inputText') || 'Xin chào 越南 from Z。'
             convertInput();
         });
+        fontSelect.addEventListener('change', () => {
+            textOutput.classList = fontSelect.value;
+        })
     </script>
 </body>
 

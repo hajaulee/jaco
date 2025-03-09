@@ -39,7 +39,7 @@ def read_hanviet_nguyendu():
     return read_hanviet_standard_list("resources/add-hanviet-nguyendu.txt")
     
 def read_hanviet_own():
-    return read_hanviet_standard_list("resources/add-hanviet-own.txt")
+    return read_hanviet_standard_list("resources/add-hanviet-own.txt", style="as")
 
 def read_hanviet_diadanh():
     return read_hanviet_standard_list("resources/diadanh.txt")
