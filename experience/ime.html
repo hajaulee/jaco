@@ -116,19 +116,38 @@
                 'y': { s: 'ý', f: 'ỳ', r: 'ỷ', x: 'ỹ', j: 'ỵ' }
             };
 
+            const multiVowelsToneMap = {
+                'ia': { s: 'ía', f: 'ìa', r: 'ỉa', x: 'ĩa', j: 'ịa' },
+                'iu': { s: 'íu', f: 'ìu', r: 'ỉu', x: 'ĩu', j: 'ịu' },
+                'ưa': { s: 'ứa', f: 'ừa', r: 'ửa', x: 'ữa', j: 'ựa' },
+                'ua': { s: 'úa', f: 'ùa', r: 'ủa', x: 'ũa', j: 'ụa' },
+            }
+
             if (tone !== '') {
 
                 // Bước 4: Xác định vị trí nguyên âm để gắn dấu.
-                const vowels = 'aăâeêoôơuưiy';
-                const chars = [...text];
-                for (let i = 0; i < vowels.length; i++) {
-                    let index = chars.indexOf(vowels[i]);
-                    if (index != -1) {
-                        chars[index] = toneMap[vowels[i]][tone];
+                let toneHandled = false;
+                for (const mVowel of Object.keys(multiVowelsToneMap)) {
+                    if (text.includes(mVowel)) {
+                        text = text.replace(mVowel, multiVowelsToneMap[mVowel][tone]);
+                        toneHandled = true;
                         break;
                     }
                 }
-                text = chars.join('');
+
+                // Nếu không phải nguyên âm đặc biệt thì xử lý bình thường
+                if (!toneHandled) {
+                    const vowels = 'aăâeêoôơuưiy';
+                    const chars = [...text];
+                    for (let i = 0; i < vowels.length; i++) {
+                        let index = chars.indexOf(vowels[i]);
+                        if (index != -1) {
+                            chars[index] = toneMap[vowels[i]][tone];
+                            break;
+                        }
+                    }
+                    text = chars.join('');
+                }
 
             }
             return text;

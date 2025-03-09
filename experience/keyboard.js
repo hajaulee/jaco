@@ -99,6 +99,7 @@ const styles = /* css */ `
             justify-content: center;
             align-items: center;
             outline: none;
+            position: relative;
         }
 
         .keyboard button > * {
@@ -108,6 +109,14 @@ const styles = /* css */ `
         .keyboard button > img {
             width: 0.6em;
             height: 1.5em;
+        }
+
+        .keyboard button[id^="Key"]::before {
+            content: attr(data-label);
+            position: absolute;
+            top: 7px;
+            left: 7px;
+            font-size: 0.6em;
         }
 
         .va-btn {
@@ -226,41 +235,41 @@ const htmlTemplate = /* html */ `
 
             <!-- Row 1 -->
             <div class="keyboard-row keyboard-row-full">
-                <button id="KeyQ">Q</button>
-                <button id="KeyW">W</button>
-                <button id="KeyE">E</button>
-                <button id="KeyR">R</button>
-                <button id="KeyT">T</button>
-                <button id="KeyY">Y</button>
-                <button id="KeyU">U</button>
-                <button id="KeyI">I</button>
-                <button id="KeyO">O</button>
-                <button id="KeyP">P</button>
+                <button id="KeyQ" data-label="Q">Q</button>
+                <button id="KeyW" data-label="W">W</button>
+                <button id="KeyE" data-label="E">E</button>
+                <button id="KeyR" data-label="R">R</button>
+                <button id="KeyT" data-label="T">T</button>
+                <button id="KeyY" data-label="Y">Y</button>
+                <button id="KeyU" data-label="U">U</button>
+                <button id="KeyI" data-label="I">I</button>
+                <button id="KeyO" data-label="O">O</button>
+                <button id="KeyP" data-label="P">P</button>
             </div>
 
             <!-- Row 2 -->
             <div class="keyboard-row">
-                <button id="KeyA">A</button>
-                <button id="KeyS">S</button>
-                <button id="KeyD">D</button>
-                <button id="KeyF">F</button>
-                <button id="KeyG">G</button>
-                <button id="KeyH">H</button>
-                <button id="KeyJ">J</button>
-                <button id="KeyK">K</button>
-                <button id="KeyL">L</button>
+                <button id="KeyA" data-label="A">A</button>
+                <button id="KeyS" data-label="S">S</button>
+                <button id="KeyD" data-label="D">D</button>
+                <button id="KeyF" data-label="F">F</button>
+                <button id="KeyG" data-label="G">G</button>
+                <button id="KeyH" data-label="H">H</button>
+                <button id="KeyJ" data-label="J">J</button>
+                <button id="KeyK" data-label="K">K</button>
+                <button id="KeyL" data-label="L">L</button>
             </div>
 
             <!-- Row 3 -->
             <div class="keyboard-row keyboard-row-full">
                 <button id="ShiftLeft">⇧</button>
-                <button id="KeyZ">Z</button>
-                <button id="KeyX">X</button>
-                <button id="KeyC">C</button>
-                <button id="KeyV">V</button>
-                <button id="KeyB">B</button>
-                <button id="KeyN">N</button>
-                <button id="KeyM">M</button>
+                <button id="KeyZ" data-label="Z">Z</button>
+                <button id="KeyX" data-label="X">X</button>
+                <button id="KeyC" data-label="C">C</button>
+                <button id="KeyV" data-label="V">V</button>
+                <button id="KeyB" data-label="B">B</button>
+                <button id="KeyN" data-label="N">N</button>
+                <button id="KeyM" data-label="M">M</button>
                 <button id="Backspace">⌫</button>
             </div>
 
