@@ -47,6 +47,7 @@ const styles = /* css */ `
 
         .keyboard-container {
             width: 510px;
+            height: fit-content;
             position: fixed;
             bottom: 0;
             left: 50%;
