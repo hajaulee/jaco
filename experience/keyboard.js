@@ -59,6 +59,7 @@ const styles = /* css */ `
             width: calc(100% - 1em);
             margin: auto;
             padding: 0.5em;
+            padding-bottom: 1.2em;
             text-align: center;
         }
 
