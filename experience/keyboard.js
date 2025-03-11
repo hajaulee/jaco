@@ -835,14 +835,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
     document.querySelectorAll(".keyboard-row button").forEach(button => {
-        button.addEventListener('mousedown', (e) => {
+        button.addEventListener('pointerdown', (e) => {
             e.preventDefault();
             e.stopImmediatePropagation();            
             keyboard.handleKey(e.target.id)
         })
     });
 
-    document.getElementById("hintRow").addEventListener('mousedown', (e) => {
+    document.getElementById("hintRow").addEventListener('pointerdown', (e) => {
         if (e.target.tagName == 'BUTTON') {
             keyboard.handleKey(e.target.id);
         }
@@ -851,7 +851,7 @@ document.addEventListener("DOMContentLoaded", function() {
     dragElement(document.querySelector('.keyboard-container'));
     document
         .querySelector('.keyboard-container')
-        .addEventListener('mousedown', (e) => {
+        .addEventListener('pointerdown', (e) => {
             e.preventDefault();
             e.stopImmediatePropagation();
         })
