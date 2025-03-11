@@ -816,7 +816,7 @@ function addElement(html) {
 
 
 /* Main */
-document.addEventListener("DOMContentLoaded", function() {
+(function() {
     addStyles(styles);
     addElement(htmlTemplate);
 
@@ -893,4 +893,4 @@ document.addEventListener("DOMContentLoaded", function() {
         fitKeyboardSize()
     })
     fitKeyboardSize();
-});
+})();
