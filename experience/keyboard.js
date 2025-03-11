@@ -816,7 +816,7 @@ function addElement(html) {
 
 
 /* Main */
-(function() {
+document.addEventListener("DOMContentLoaded", function() {
     addStyles(styles);
     addElement(htmlTemplate);
 
@@ -879,7 +879,7 @@ function addElement(html) {
         }
     });
 
-    window.addEventListener('mousedown', (e) => {
+    window.addEventListener('pointerdown', (e) => {
         if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)){
             keyboard.textEditor = e.target;
             keyboard.show();
@@ -893,4 +893,4 @@ function addElement(html) {
         fitKeyboardSize()
     })
     fitKeyboardSize();
-})();
+});
