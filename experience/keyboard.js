@@ -117,6 +117,10 @@ const styles = /* css */ `
             font-size: 0.6em;
         }
 
+        .keyboard button.no-badge::before {
+            content: ''!important;
+        }
+
         .va-btn {
             padding: 6px 11px;
         }
@@ -276,7 +280,7 @@ const htmlTemplate = /* html */ `
                 <button id="Symbol">?123</button>
                 <button id="Comma">,</button>
                 <button id="AltLeft">🌐</button>
-                <button id="Space" class="space">Space</button>
+                <button id="Space" class="space">Dấu cách</button>
                 <button id="Period">.</button>
                 <button id="Enter" class="btn_primary">⏎</button>
             </div>
@@ -492,6 +496,74 @@ class JacoKeyBoardQwertyState {
     }
 }
 
+class JacoKeyBoardSymbolState {
+    name = "symbol";
+    cssClass = 'no-badge';
+
+    layout = {
+        "Q": "1",
+        "W": "2",
+        "E": "3",
+        "R": "4",
+        "T": "5",
+        "Y": "6",
+        "U": "7",
+        "I": "8",
+        "O": "9",
+        "P": "0",
+        "A": "@",
+        "S": "#",
+        "D": "$",
+        "F": "&",
+        "G": "-",
+        "H": "+",
+        "J": "(",
+        "K": ")",
+        "L": "/",
+        "Z": "*",
+        "X": "\"",
+        "C": "'",
+        "V": ":",
+        "B": ";",
+        "N": "!",
+        "M": "?"
+    }
+}
+
+class JacoKeyBoardSymbolShiftState {
+    name = "symbol";
+    cssClass = 'no-badge';
+
+    layout = {
+        "Q": "~",
+        "W": "`",
+        "E": "|",
+        "R": "・",
+        "T": "√",
+        "Y": "π",
+        "U": "÷",
+        "I": "×",
+        "O": "σ",
+        "P": "Δ",
+        "A": "¥",
+        "S": "【",
+        "D": "】",
+        "F": "^",
+        "G": "°",
+        "H": "=",
+        "J": "{",
+        "K": "}",
+        "L": "\\",
+        "Z": "%",
+        "X": "「",
+        "C": "」",
+        "V": "<",
+        "B": ">",
+        "N": "[",
+        "M": "]"
+    }
+}
+
 class JacoKeyBoard {
 
     base64TransparentImage = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
@@ -501,6 +573,8 @@ class JacoKeyBoard {
     vaShiftState = new JacoKeyBoardVaShiftState();
     dtpcState = new JacoKeyBoardDtPcState();
     qwertyState = new JacoKeyBoardQwertyState();
+    symbolState = new JacoKeyBoardSymbolState();
+    symbolShiftState = new JacoKeyBoardSymbolShiftState();
     states = [
         this.pdState,
         this.vaState,
@@ -559,7 +633,11 @@ class JacoKeyBoard {
         }
         if (key.startsWith("Key")) {
             const charKey = key.slice(3);
-            const keyVal = this.state == this.qwertyState ? charKey.toLowerCase() : this.state.layout[charKey].split("_")[1]?.split(".")[0];
+            const keyVal = this.state == this.qwertyState 
+            ? charKey.toLowerCase() 
+            : [this.symbolState, this.symbolShiftState].includes(this.state)
+            ? this.state.layout[charKey]
+            : this.state.layout[charKey].split("_")[1]?.split(".")[0];
             if (keyVal) {
 
                 if (this.state.name == 'pd') {
@@ -605,16 +683,22 @@ class JacoKeyBoard {
                     }
                 } else if (this.state.name == 'qwerty'){
                     this.addText(this.shiftKey ? keyVal.toUpperCase() : keyVal.toLowerCase());
+                } else if (this.state.name == 'symbol'){
+                    this.addText(keyVal);
                 }
             }
             handled = true;
         } else if (key == "ShiftLeft") {
             this.shiftKey = !this.shiftKey;
 
-            if (this.state.name == 'va') {
+            if (this.state == this.vaState) {
                 this.state = this.vaShiftState;
-            } else if (this.state.name == 'va-shift') {
+            } else if (this.state == this.vaShiftState) {   
                 this.state = this.vaState;
+            } else if (this.state == this.symbolState) {
+                this.state = this.symbolShiftState;
+            } else if (this.state == this.symbolShiftState) {
+                this.state = this.symbolState;
             }
             handled = true;
         } else if (key == "AltLeft") {
@@ -622,6 +706,13 @@ class JacoKeyBoard {
                 this.state = this.pdState;
             } else {
                 this.state = this.qwertyState;
+            }
+            handled = true;
+        } else if (key == "Symbol") {
+            if (this.state == this.symbolState){
+                this.state = this.pdState;
+            } else {
+                this.state = this.symbolState;
             }
             handled = true;
         } else if (key == "Space") {
@@ -694,6 +785,8 @@ class JacoKeyBoard {
             keyBtn.classList = this.state.cssClass;
             if (this.state == this.qwertyState){
                 keyBtn.innerHTML = this.shiftKey ? key.toUpperCase() : key.toLowerCase();
+            } else if ([this.symbolState, this.symbolShiftState].includes(this.state)){
+                keyBtn.innerHTML = this.state.layout[key];
             } else {
                 if (this.state.layout[key]) {
                     keyBtn.innerHTML = `<img src="${this.state.layout[key]}">`;
