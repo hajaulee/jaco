@@ -59,6 +59,7 @@ const styles = /* css */ `
             width: calc(100% - 1em);
             margin: auto;
             padding: 0.5em;
+            padding-bottom: 1.2em;
             text-align: center;
         }
 
@@ -928,14 +929,14 @@ function addElement(html) {
 
 
     document.querySelectorAll(".keyboard-row button").forEach(button => {
-        button.addEventListener('mousedown', (e) => {
+        button.addEventListener('pointerdown', (e) => {
             e.preventDefault();
             e.stopImmediatePropagation();            
             keyboard.handleKey(e.target.id)
         })
     });
 
-    document.getElementById("hintRow").addEventListener('mousedown', (e) => {
+    document.getElementById("hintRow").addEventListener('pointerdown', (e) => {
         if (e.target.tagName == 'BUTTON') {
             keyboard.handleKey(e.target.id);
         }
@@ -944,7 +945,7 @@ function addElement(html) {
     dragElement(document.querySelector('.keyboard-container'));
     document
         .querySelector('.keyboard-container')
-        .addEventListener('mousedown', (e) => {
+        .addEventListener('pointerdown', (e) => {
             e.preventDefault();
             e.stopImmediatePropagation();
         })
@@ -972,7 +973,7 @@ function addElement(html) {
         }
     });
 
-    window.addEventListener('mousedown', (e) => {
+    window.addEventListener('pointerdown', (e) => {
         if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)){
             keyboard.textEditor = e.target;
             keyboard.show();
