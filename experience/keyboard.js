@@ -978,6 +978,9 @@ function addElement(html) {
             keyboard.textEditor = e.target;
             keyboard.show();
             e.target.classList.add('regular-font');
+            setTimeout(() => {
+                e.target.focus();
+            }, 100);
         } else {
             keyboard.hide();
         }
