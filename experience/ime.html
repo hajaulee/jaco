@@ -125,11 +125,13 @@
 
                 // Bước 4: Xác định vị trí nguyên âm để gắn dấu.
                 let toneHandled = false;
-                for (const mVowel of Object.keys(multiVowelsToneMap)) {
-                    if (text.includes(mVowel)) {
-                        text = text.replace(mVowel, multiVowelsToneMap[mVowel][tone]);
-                        toneHandled = true;
-                        break;
+                if (!text.startsWith('qu') && !text.startsWith('gi')) {
+                    for (const mVowel of Object.keys(multiVowelsToneMap)) {
+                        if (text.includes(mVowel)) {
+                            text = text.replace(mVowel, multiVowelsToneMap[mVowel][tone]);
+                            toneHandled = true;
+                            break;
+                        }
                     }
                 }
 
