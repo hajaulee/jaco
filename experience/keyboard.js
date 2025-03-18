@@ -864,7 +864,12 @@ function fitKeyboardSize() {
 }
 
 function dragElement(elmnt) {
-    elmnt.addEventListener('mousedown', function (e) {
+    elmnt.addEventListener('pointerdown', function (e) {
+        if (e.pointerType != 'mouse') {
+            return;
+        }
+        e.preventDefault();
+        
         // Get the initial mouse cursor position
         let offsetX = e.clientX - parseInt(window.getComputedStyle(this).left);
         let offsetY = e.clientY - parseInt(window.getComputedStyle(this).top);
@@ -881,13 +886,13 @@ function dragElement(elmnt) {
 
         const onMouseUp = () => {
             // Remove the event listeners when the mouse button is released
-            document.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('mouseup', onMouseUp);
+            document.removeEventListener('pointermove', onMouseMove);
+            document.removeEventListener('pointerup', onMouseUp);
         };
 
         // Attach the event listeners
-        document.addEventListener('mousemove', onMouseMove);
-        document.addEventListener('mouseup', onMouseUp);
+        document.addEventListener('pointermove', onMouseMove);
+        document.addEventListener('pointerup', onMouseUp);
     });
 }
 
@@ -974,6 +979,8 @@ function addElement(html) {
     });
 
     window.addEventListener('pointerdown', (e) => {
+        console.log(e);
+        
         if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)){
             keyboard.textEditor = e.target;
             keyboard.show();
