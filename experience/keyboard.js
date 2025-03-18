@@ -32,14 +32,7 @@ const styles = /* css */ `
         }
 
         .regular-font {
-            font-family: 'HoufRegular', 'sanjikaishu', 'ZiTiGuanJiaKaiTi', Arial, Verdana, sans-serif !important;
-        }
-
-        #textInput {
-            width: 80%;
-            height: 200px;
-            padding: 0.5em;
-            font-size: 26px;
+            font-family: 'HoufRegular', 'HoufRegularB64', 'sanjikaishu', 'ZiTiGuanJiaKaiTi', Arial, Verdana, sans-serif !important;
         }
 
         .keyboard-container {
@@ -51,6 +44,8 @@ const styles = /* css */ `
             translate: -50% 0;
             transform: scale(var(--keyboard-scale));
             transform-origin: center bottom;
+            font-size: 16px;
+            z-index: 10000;
         }
 
         .keyboard {            
@@ -106,6 +101,7 @@ const styles = /* css */ `
         }
 
         .keyboard button > img {
+            font-size: 16px;
             width: 0.6em;
             height: 1.5em;
         }
@@ -600,20 +596,41 @@ class JacoKeyBoard {
         nang: 'j'
     }
 
+    resCache = {};
+    
+    _ready;
+
     constructor() {
-        this.preloadKeyImage()
+        this.onReady = () => new Promise((resolve) => {this._ready = resolve});
+
+        this.preloadKeyImage();
+        this.preloadFont();
     }
 
     preloadKeyImage() {
         this.states.forEach(state => {
-            Object.keys(state.layout).forEach(key => {
-                const image = new Image();
-                image.src = state.layout[key];
+            Promise.all(Object.keys(state.layout).map(async (key) => {
+                this.resCache[state.layout[key]] = await this.urlContentToDataUri(state.layout[key]);
+            })).then(() => {
+                this._ready();
             });
         });
     }
 
-    hide(){
+    async preloadFont() {
+        const uriData = await this.urlContentToDataUri("https://hajaulee.github.io/Houf-Jaco-Regular-Script/new_fonts/ttf/HoufRegularScript-Light.ttf");
+        const newStyle = document.createElement('style');
+        newStyle.appendChild(document.createTextNode(`
+            @font-face {
+                font-family: "HoufRegularB64";
+                src: url("${uriData}");
+                unicode-range: U+3040-309F, U+4E00-9FFF, U+30A0-30FF, U+FF00-FFEF, U+1B000-1B0FF, U+3040-F5700;
+            }  
+        `));
+        document.head.appendChild(newStyle);  
+    }
+
+    hide() {
         document.querySelector(".keyboard-container").style.display = 'none';
     }
 
@@ -626,7 +643,7 @@ class JacoKeyBoard {
         let handled = false;
         let forceUpdate = false;
 
-        if (!this.textEditor){
+        if (!this.textEditor) {
             return false;
         }
         if (key.startsWith('Digit') && this.hintList.length) {
@@ -634,11 +651,11 @@ class JacoKeyBoard {
         }
         if (key.startsWith("Key")) {
             const charKey = key.slice(3);
-            const keyVal = this.state == this.qwertyState 
-            ? charKey.toLowerCase() 
-            : [this.symbolState, this.symbolShiftState].includes(this.state)
-            ? this.state.layout[charKey]
-            : this.state.layout[charKey].split("_")[1]?.split(".")[0];
+            const keyVal = this.state == this.qwertyState
+                ? charKey.toLowerCase()
+                : [this.symbolState, this.symbolShiftState].includes(this.state)
+                    ? this.state.layout[charKey]
+                    : this.state.layout[charKey].split("_")[1]?.split(".")[0];
             if (keyVal) {
 
                 if (this.state.name == 'pd') {
@@ -682,9 +699,9 @@ class JacoKeyBoard {
                     if (this.codeMap[newWord]) {
                         this.replaceText(this.getChar(newWord), char.length);
                     }
-                } else if (this.state.name == 'qwerty'){
+                } else if (this.state.name == 'qwerty') {
                     this.addText(this.shiftKey ? keyVal.toUpperCase() : keyVal.toLowerCase());
-                } else if (this.state.name == 'symbol'){
+                } else if (this.state.name == 'symbol') {
                     this.addText(keyVal);
                 }
             }
@@ -694,7 +711,7 @@ class JacoKeyBoard {
 
             if (this.state == this.vaState) {
                 this.state = this.vaShiftState;
-            } else if (this.state == this.vaShiftState) {   
+            } else if (this.state == this.vaShiftState) {
                 this.state = this.vaState;
             } else if (this.state == this.symbolState) {
                 this.state = this.symbolShiftState;
@@ -703,14 +720,14 @@ class JacoKeyBoard {
             }
             handled = true;
         } else if (key == "AltLeft") {
-            if (this.state == this.qwertyState){
+            if (this.state == this.qwertyState) {
                 this.state = this.pdState;
             } else {
                 this.state = this.qwertyState;
             }
             handled = true;
         } else if (key == "Symbol") {
-            if (this.state == this.symbolState){
+            if (this.state == this.symbolState) {
                 this.state = this.pdState;
             } else {
                 this.state = this.symbolState;
@@ -745,7 +762,7 @@ class JacoKeyBoard {
         }
 
         if (key != "ShiftLeft") {
-            if (this.shiftKey){
+            if (this.shiftKey) {
                 forceUpdate = true;
             }
             this.shiftKey = false;
@@ -774,7 +791,7 @@ class JacoKeyBoard {
         return handled;
     }
 
-    resetKeyboard(){
+    resetKeyboard() {
         if (this.state.name != 'pd' && this.state.name != 'qwerty') {
             this.state = this.pdState;
         }
@@ -784,13 +801,13 @@ class JacoKeyBoard {
         Object.keys(this.state.layout).forEach(key => {
             const keyBtn = document.getElementById('Key' + key);
             keyBtn.classList = this.state.cssClass;
-            if (this.state == this.qwertyState){
+            if (this.state == this.qwertyState) {
                 keyBtn.innerHTML = this.shiftKey ? key.toUpperCase() : key.toLowerCase();
-            } else if ([this.symbolState, this.symbolShiftState].includes(this.state)){
+            } else if ([this.symbolState, this.symbolShiftState].includes(this.state)) {
                 keyBtn.innerHTML = this.state.layout[key];
             } else {
                 if (this.state.layout[key]) {
-                    keyBtn.innerHTML = `<img src="${this.state.layout[key]}">`;
+                    keyBtn.innerHTML = `<img src="${this.resCache[this.state.layout[key]]}" alt="">`;
                 } else {
                     keyBtn.innerHTML = `<img src="data:image/png;base64,${this.base64TransparentImage}" alt="">`;
                 }
@@ -857,6 +874,16 @@ class JacoKeyBoard {
         // Dispatch input event to notify changes
         textarea.dispatchEvent(new Event('input', { bubbles: true }));
     }
+
+    async urlContentToDataUri(url) {
+        return fetch(url, { mode: 'cors', cache: 'force-cache' })
+            .then(response => response.blob())
+            .then(blob => new Promise(callback => {
+                let reader = new FileReader();
+                reader.onload = function () { callback(this.result) };
+                reader.readAsDataURL(blob);
+            }));
+    }
 }
 
 function fitKeyboardSize() {
@@ -869,7 +896,7 @@ function dragElement(elmnt) {
             return;
         }
         e.preventDefault();
-        
+
         // Get the initial mouse cursor position
         let offsetX = e.clientX - parseInt(window.getComputedStyle(this).left);
         let offsetY = e.clientY - parseInt(window.getComputedStyle(this).top);
@@ -915,7 +942,7 @@ function addElement(html) {
 
 
 /* Main */
-(function() {
+(function () {
     addStyles(styles);
     addElement(htmlTemplate);
 
@@ -929,14 +956,17 @@ function addElement(html) {
             keyboard.codeWordMap[data[word]] = word;
         })
         keyboard.hantuHints = hantuHints;
-        keyboard.update();
+        keyboard.onReady().then(() => {
+            keyboard.update();
+        });
+        window.jacoKeyboard = keyboard;
     })
 
 
     document.querySelectorAll(".keyboard-row button").forEach(button => {
         button.addEventListener('pointerdown', (e) => {
             e.preventDefault();
-            e.stopImmediatePropagation();            
+            e.stopImmediatePropagation();
             keyboard.handleKey(e.target.id)
         })
     });
@@ -967,7 +997,7 @@ function addElement(html) {
         let cocKey = (e.metaKey || e.ctrlKey);
 
         if (!cocKey) {
-            if (keyboard.state == keyboard.qwertyState && e.code != 'AltLeft'){
+            if (keyboard.state == keyboard.qwertyState && e.code != 'AltLeft') {
                 return;
             }
             const handled = keyboard.handleKey(e.code, true);
@@ -980,8 +1010,8 @@ function addElement(html) {
 
     window.addEventListener('pointerdown', (e) => {
         console.log(e);
-        
-        if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)){
+
+        if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
             keyboard.textEditor = e.target;
             keyboard.show();
             e.target.classList.add('regular-font');
