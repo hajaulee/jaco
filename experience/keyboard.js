@@ -601,8 +601,8 @@ class JacoKeyBoard {
     _ready;
 
     constructor() {
-        this.onReady = () => new Promise((resolve) => { this._ready = resolve });
-
+        const pm = new Promise((resolve) => { this._ready = resolve });
+        this.onReady = () => pm;
         this.preloadKeyImage();
         this.preloadFont();
     }
