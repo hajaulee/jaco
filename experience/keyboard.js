@@ -831,9 +831,12 @@ class JacoKeyBoard {
 
         // Calculate appropriate scroll position based on cursor
         const textBeforeCursor = this.textEditor.value.substring(0, cursorPosition);
+        // Calculate style of text editor
+        const textEditorStyle = window.getComputedStyle(this.textEditor);
+
         const tempSpan = document.createElement('span');
         tempSpan.textContent = textBeforeCursor;
-        tempSpan.style.font = window.getComputedStyle(this.textEditor).font;
+        tempSpan.style.font = textEditorStyle.font;
         tempSpan.style.position = 'absolute';
         tempSpan.style.visibility = 'hidden';
         tempSpan.style.whiteSpace = 'nowrap';
@@ -844,7 +847,7 @@ class JacoKeyBoard {
 
         // Adjust scroll position to ensure cursor is visible
         if (cursorOffset > this.textEditor.clientWidth) {
-            this.textEditor.scrollLeft = cursorOffset - this.textEditor.clientWidth + 20; // 20px buffer
+            this.textEditor.scrollLeft = cursorOffset - this.textEditor.clientWidth + parseFloat(textEditorStyle.paddingLeft) + parseFloat(textEditorStyle.paddingRight) + 25; // 25px buffer
         }
     }
 
