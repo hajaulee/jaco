@@ -597,11 +597,11 @@ class JacoKeyBoard {
     }
 
     resCache = {};
-    
+
     _ready;
 
     constructor() {
-        this.onReady = () => new Promise((resolve) => {this._ready = resolve});
+        this.onReady = () => new Promise((resolve) => { this._ready = resolve });
 
         this.preloadKeyImage();
         this.preloadFont();
@@ -627,7 +627,7 @@ class JacoKeyBoard {
                 unicode-range: U+3040-309F, U+4E00-9FFF, U+30A0-30FF, U+FF00-FFEF, U+1B000-1B0FF, U+3040-F5700;
             }  
         `));
-        document.head.appendChild(newStyle);  
+        document.head.appendChild(newStyle);
     }
 
     hide() {
@@ -787,6 +787,7 @@ class JacoKeyBoard {
         if (this.state.name != oldStateName || key == "ShiftLeft" || forceUpdate) {
             this.update();
         }
+        this.scrollToCurrentCursor();
 
         return handled;
     }
@@ -823,6 +824,27 @@ class JacoKeyBoard {
             return `<button id="Han-${hint}">${hint}</button>`
         }).join('\n');
         document.getElementById('hintRow').innerHTML = hintRowContent;
+    }
+
+    scrollToCurrentCursor() {
+        const cursorPosition = this.textEditor.selectionStart;
+
+        // Calculate appropriate scroll position based on cursor
+        const textBeforeCursor = this.textEditor.value.substring(0, cursorPosition);
+        const tempSpan = document.createElement('span');
+        tempSpan.textContent = textBeforeCursor;
+        tempSpan.style.font = window.getComputedStyle(this.textEditor).font;
+        tempSpan.style.position = 'absolute';
+        tempSpan.style.visibility = 'hidden';
+        document.body.appendChild(tempSpan);
+
+        const cursorOffset = tempSpan.getBoundingClientRect().width;
+        document.body.removeChild(tempSpan);
+
+        // Adjust scroll position to ensure cursor is visible
+        if (cursorOffset > this.textEditor.clientWidth) {
+            this.textEditor.scrollLeft = cursorOffset - this.textEditor.clientWidth + 20; // 20px buffer
+        }
     }
 
     getChar(word) {
@@ -1009,8 +1031,6 @@ function addElement(html) {
     });
 
     window.addEventListener('pointerdown', (e) => {
-        console.log(e);
-
         if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
             keyboard.textEditor = e.target;
             keyboard.show();
