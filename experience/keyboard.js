@@ -836,6 +836,7 @@ class JacoKeyBoard {
         tempSpan.style.font = window.getComputedStyle(this.textEditor).font;
         tempSpan.style.position = 'absolute';
         tempSpan.style.visibility = 'hidden';
+        tempSpan.style.whiteSpace = 'nowrap';
         document.body.appendChild(tempSpan);
 
         const cursorOffset = tempSpan.getBoundingClientRect().width;
