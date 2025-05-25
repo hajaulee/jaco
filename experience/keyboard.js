@@ -989,6 +989,7 @@ function addElement(html) {
     addElement(htmlTemplate);
 
     const keyboard = new JacoKeyBoard();
+    window.jacoKeyboard = keyboard;
     Promise.all([
         fetch("https://hajaulee.github.io/jaco/extension/code_map.json").then(res => res.json()),
         fetch("https://hajaulee.github.io/jaco/experience/hantu_hint.json").then(res => res.json())
@@ -1001,7 +1002,6 @@ function addElement(html) {
         keyboard.onReady().then(() => {
             keyboard.update();
         });
-        window.jacoKeyboard = keyboard;
     })
 
 
