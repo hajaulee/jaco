@@ -597,8 +597,8 @@ class JacoKeyBoard {
     }
 
     resCache = {};
-
     _ready;
+    backspaceTimer = null;
 
     constructor() {
         const pm = new Promise((resolve) => { this._ready = resolve });
@@ -704,6 +704,8 @@ class JacoKeyBoard {
                 } else if (this.state.name == 'symbol') {
                     this.addText(keyVal);
                 }
+            } else {
+                this.state = this.pdState;
             }
             handled = true;
         } else if (key == "ShiftLeft") {
@@ -748,6 +750,12 @@ class JacoKeyBoard {
             }
             this.resetKeyboard();
             handled = true;
+
+            if (!this.backspaceTimer) {
+                this.backspaceTimer = setInterval(() => {
+                    this.handleKey('Backspace');
+                }, 100);
+            }
         } else if (['Comma', 'Period', 'Enter'].includes(key)) {
             this.addText({ Comma: ',', Period: '.', Enter: '\n' }[key]);
             this.resetKeyboard();
@@ -790,6 +798,15 @@ class JacoKeyBoard {
         this.scrollToCurrentCursor();
 
         return handled;
+    }
+
+    handleKeyUp(key) {
+        if (key == "Backspace") {
+            if (this.backspaceTimer) {
+                clearInterval(this.backspaceTimer);
+                this.backspaceTimer = null;
+            }
+        }
     }
 
     resetKeyboard() {
@@ -994,6 +1011,14 @@ function addElement(html) {
             e.preventDefault();
             e.stopImmediatePropagation();
             keyboard.handleKey(e.target.id)
+        })
+    });
+
+    document.querySelectorAll(".keyboard-row button").forEach(button => {
+        button.addEventListener('pointerup', (e) => {
+            // e.preventDefault();
+            // e.stopImmediatePropagation();
+            keyboard.handleKeyUp(e.target.id)
         })
     });
 
