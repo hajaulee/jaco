@@ -801,11 +801,10 @@ class JacoKeyBoard {
     }
 
     handleKeyUp(key) {
-        if (key == "Backspace") {
-            if (this.backspaceTimer) {
-                clearInterval(this.backspaceTimer);
-                this.backspaceTimer = null;
-            }
+        // Cancel deleting
+        if (this.backspaceTimer) {
+            clearInterval(this.backspaceTimer);
+            this.backspaceTimer = null;
         }
     }
 
