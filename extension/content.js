@@ -1,6 +1,7 @@
 // Translate all the text nodes on the page
 const KEY_AUTO_TRAN = "JacoAutoTranslation";
 const KEY_USE_HANVIET = "UseHanViet";
+const KEY_JACO_FONT = "JacoFont";
 const ONLINE_HANVIET_DICT_URL = "https://hajaulee.github.io/jaco/extension/hanviet_dict.json";
 
 const getHost = () => location.href.split("/")[2];
@@ -11,9 +12,22 @@ const global = {
   fontDownloaded: false,
   translatorExecuted: false,
   useHanviet: true,
-  autoTranslation: false
+  autoTranslation: false,
+  loadedFonts: {},
 };
 
+const SUPPORTED_JACO_FONTS = [
+  { 
+    code: "maru", 
+    name: "JacoMaru", 
+    url: "https://hajaulee.github.io/Houf-Jaco-Maru/new_fonts/ttf/HoufJacoMaru-Light.ttf" 
+  },
+  { 
+    code: "regular", 
+    name: "HoufRegular", 
+    url: "https://hajaulee.github.io/Houf-Jaco-Regular-Script/new_fonts/ttf/HoufRegularScript-Light.ttf" 
+  },
+];
 /* 
 ***************************
 *   FUNCTION
@@ -46,16 +60,22 @@ async function readStorage(key) {
 }
 
 async function readFontData() {
-  const data =  await urlContentToDataUri("https://hajaulee.github.io/Houf-Jaco-Maru/new_fonts/ttf/HoufJacoMaru-Light.ttf");
+  const data =  await urlContentToDataUri(SUPPORTED_JACO_FONTS.find(f => f.code === global.jacoFont).url);
+  global.loadedFonts[global.jacoFont] = data;
   global.fontDownloaded = true;
   return data;
 }
 
 function setupFontFamily(uriData) {
+  const fontInfo = SUPPORTED_JACO_FONTS.find(f => f.code === global.jacoFont);
+  if (!fontInfo) {
+    console.error(`Font ${global.jacoFont} is not supported.`);
+    return;
+  }
   var newStyle = document.createElement('style');
   newStyle.appendChild(document.createTextNode(`
     @font-face {
-        font-family: "JacoMaru";
+        font-family: ${fontInfo.name};
         src: url("${uriData}");
     }  
   `));
@@ -96,6 +116,11 @@ async function walkAndTranslate(node) {
             parentNode.setAttribute('data-translator-origin', childNodeText);
             if (translatedText != childNodeText) {
               parentNode.classList.add("jaco-text");
+              // Remove any existing jaco-font-* class
+              parentNode.classList.remove(...[...parentNode.classList].filter(c => c.startsWith('jaco-font-')));
+              if (global.jacoFont) {
+                parentNode.classList.add(`jaco-font-${global.jacoFont}`);
+              }
             }
           }
         });
@@ -133,9 +158,11 @@ async function init() {
 async function processRequest(request, sender, sendResponse) {
   if (request.action === "startTranslation") {
     const useHanviet = await readStorage(KEY_USE_HANVIET);
+    const jacoFont = await readStorage(KEY_JACO_FONT);
     global.useHanviet = useHanviet == 'true';
+    global.jacoFont = jacoFont ?? "maru";
     
-    if (!global.fontDownloaded){
+    if (!global.loadedFonts[global.jacoFont]) {
       readFontData().then(fontData => setupFontFamily(fontData));
     }
     walkAndTranslate(document.body);
@@ -143,6 +170,19 @@ async function processRequest(request, sender, sendResponse) {
   } else if (request.action === "checkInjected"){
     console.log("Injected");
     sendResponse({status: true});
+  } else if (request.action === "updateFont") {
+    global.jacoFont = request.data;
+    if (!global.loadedFonts[global.jacoFont]) {
+      readFontData().then(fontData => setupFontFamily(fontData));
+    }
+    document.querySelectorAll('.jaco-text').forEach(el => {
+      // Remove any existing jaco-font-* class
+      el.classList.remove(...[...el.classList].filter(c => c.startsWith('jaco-font-')));
+      if (global.jacoFont) {
+        el.classList.add(`jaco-font-${global.jacoFont}`);
+      }
+    });
+    sendResponse({ status: "Cập nhật font thành công!" });
   }
 }
 

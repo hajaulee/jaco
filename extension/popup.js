@@ -1,7 +1,7 @@
 // popup.js
 const KEY_AUTO_TRAN = "JacoAutoTranslation";
 const KEY_USE_HANVIET = "UseHanViet";
-
+const KEY_JACO_FONT= "JacoFont";
 const activeTabFilter = { active: true, currentWindow: true };
 
 const el = (elId) => document.getElementById(elId);
@@ -52,6 +52,16 @@ async function saveStorage(key, data) {
   });
 }
 
+function updateFont() {
+      const font = el("fontSelection").value;
+      const textOutput = el('textOutput');
+      // Remove current jaco-font-* class
+      textOutput.classList.remove(...[...textOutput.classList].filter(c => c.startsWith('jaco-font-')));
+      // Add selected jaco-font-x class
+      if (font) {
+          textOutput.classList.add(`jaco-font-${font}`);
+      }
+  }
 
 function initConverterDemo(){
   const conveter = new Converter();
@@ -62,6 +72,7 @@ function initConverterDemo(){
   });
   const textInput = document.getElementById('textInput');
   const textOutput = document.getElementById('textOutput');
+  const fontSelection = document.getElementById('fontSelection');
 
   function convertInput() {
       textOutput.innerHTML = conveter.convert(textInput.innerText, useHanviet.checked).trim().replace(/\n/g, '<br>');
@@ -72,6 +83,17 @@ function initConverterDemo(){
   useHanviet.addEventListener('change', () => convertInput());
   conveter.ready.then(() => {
       convertInput();
+  });
+
+  fontSelection.addEventListener('change', () => {
+    updateFont();
+    withCurrentTab((tab) => {
+      chrome.tabs.sendMessage(tab.id, { action: "updateFont", data: fontSelection.value }, (response) => {
+        if (response && response.status) {
+          el('status').innerText = response.status;
+        }
+      });
+    });
   });
 }
 
@@ -90,6 +112,10 @@ readStorage(KEY_AUTO_TRAN).then(result => {
 });
 readStorage(KEY_USE_HANVIET).then(result => {
   el('useHanviet').checked = result == 'true';
+});
+readStorage(KEY_JACO_FONT).then(result => {
+  el('fontSelection').value = result || "maru";
+  updateFont();
 });
 
 
@@ -128,3 +154,7 @@ el('useHanviet').addEventListener('change', () => {
   saveStorage(KEY_USE_HANVIET, checked);
 });
 
+el("fontSelection").addEventListener('change', (event) => {
+  const font = event.target.value;
+  saveStorage(KEY_JACO_FONT, font)
+});

@@ -3,8 +3,22 @@
     src: url("https://hajaulee.github.io/Houf-Jaco-Maru/new_fonts/ttf/HoufJacoMaru-Light.ttf");
 }
 
-.jaco-text {
+@font-face {
+    font-family: "HoufRegular";
+    src: url("https://hajaulee.github.io/Houf-Jaco-Regular-Script/new_fonts/ttf/HoufRegularScript-Light.ttf");
+    unicode-range: U+3040-309F, U+4E00-9FFF, U+30A0-30FF, U+FF00-FFEF, U+1B000-1B0FF, U+3040-F5700;
+}
+
+.jaco-font-maru {
     font-family: 'JacoMaru', 'Arial Narrow', Arial, sans-serif!important;
+}
+
+.jaco-font-regular {
+    font-family: 'HoufRegular', Arial, Verdana, sans-serif !important;
+}
+
+.jaco-text {
+    /* font-family: 'JacoMaru', 'Arial Narrow', Arial, sans-serif!important; */
     line-break: anywhere;
     letter-spacing: 0.1rem;
 }
