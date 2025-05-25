@@ -5,8 +5,143 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jaco</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:400,600&display=swap">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <style>
+        :root {
+            --primary: #2d3748;
+            --accent: #4fd1c5;
+            --bg: #f7fafc;
+            --card-bg: #fff;
+            --border: #e2e8f0;
+            --input-bg: #f1f5f9;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            color: var(--primary);
+        }
+
+        .main-container {
+            max-width: 700px;
+            margin: 40px auto;
+            background: var(--card-bg);
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(44, 62, 80, 0.08);
+            padding: 2.5rem 2rem 2rem 2rem;
+        }
+
+        .w3-bar {
+            background: var(--primary) !important;
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.04);
+            overflow: hidden;
+        }
+
+        .w3-bar .w3-bar-item {
+            color: #fff !important;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .w3-bar .w3-bar-item.w3-red,
+        .w3-bar .w3-bar-item.active {
+            background: var(--accent) !important;
+            color: var(--primary) !important;
+        }
+
+        .w3-bar .w3-bar-item a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .input-section {
+            margin-top: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-text {
+            outline: 0;
+            width: 100%;
+            min-height: 140px;
+            max-width: 100%;
+            border-radius: 10px;
+            padding: 1.2em;
+            margin: 0;
+            font-size: 1.1rem;
+            background: var(--input-bg);
+            border: 1.5px solid var(--border);
+            transition: border 0.2s;
+            resize: vertical;
+        }
+
+        .input-text:focus {
+            border: 1.5px solid var(--accent);
+            background: #e6fffa;
+        }
+
+        .output-controls {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        #textOutput {
+            font-size: 1.5rem;
+            line-break: anywhere;
+            min-height: 120px;
+            background: var(--input-bg);
+            border-radius: 10px;
+            padding: 1.2em;
+            border: 1.5px solid var(--border);
+            margin-top: 0.5rem;
+            transition: border 0.2s;
+        }
+
+        #textOutput.jaco-maru-font,
+        #textOutput.regular-font {
+            font-family: inherit;
+        }
+
+        #textOutput h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: inherit;
+        }
+
+        .output-controls label,
+        .output-controls select {
+            font-size: 1rem;
+        }
+
+        .output-controls input[type="checkbox"] {
+            accent-color: var(--accent);
+            width: 1.1em;
+            height: 1.1em;
+        }
+
+        @media (max-width: 600px) {
+            .main-container {
+                padding: 1rem 0.5rem 1.5rem 0.5rem;
+            }
+
+            .input-section {
+                margin-top: 1rem;
+            }
+        }
+
+        /* Custom font faces */
         @font-face {
             font-family: "JacoMaru";
             src: url("https://hajaulee.github.io/Houf-Jaco-Maru/new_fonts/ttf/HoufJacoMaru-Light.ttf");
@@ -24,90 +159,39 @@
         .regular-font {
             font-family: 'HoufRegular', Courier, monospace !important;
         }
-
-        .input-text {
-            outline: 0;
-            width: 100%;
-            min-height: 300px;
-            max-width: 600px;
-            height: calc(100% - 60px);
-            border-radius: 7px;
-            padding: 1em;
-            margin: 1em;
-            font-size: 16px;
-        }
-
-        .center {
-            display: flex;
-            justify-content: center;
-        }
-
-        .w3-bar {
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
-        
-        #textOutput {
-            font-size: 24px;
-            line-break: anywhere;
-        }
-
-        #textOutput h1, h2, h3, h4, h5, h6 {
-            font-family: inherit;
-        }
-        
     </style>
     <script src="./extension/converter.js"></script>
 </head>
 
 <body>
-    <div class="w3-container">
-        <div class="w3-bar w3-black">
-            <button class="w3-bar-item w3-button tablink w3-red" onclick="openTab(event,'Viet')">Tiếng Việt</button>
-            <button class="w3-bar-item w3-button tablink" onclick="openTab(event,'Jaco')">Jaco</button>
-            <button class="w3-bar-item w3-button tablink"><a target="_blank" href="https://hajaulee.github.io/jaco/experience/ime.html">IME</a></button>
-            <button class="w3-bar-item w3-button tablink"><a target="_blank" href="https://hajaulee.github.io/jaco/experience/create-pdf.html">Create book</a></button>
-            <button class="w3-bar-item w3-button tablink"><a target="_blank" href="https://github.com/hajaulee/jaco">Github</a></button>
+    <div class="main-container">
+        <div class="w3-bar">
+            <span class="w3-bar-item" style="font-weight:700;font-size:1.2rem;letter-spacing:0.5px;">Jaco Converter</span>
+            <span class="w3-bar-item w3-right">
+                <a class="w3-bar-item w3-button tablink" target="_blank" href="https://hajaulee.github.io/jaco/experience/ime.html">IME</a>
+                <a class="w3-bar-item w3-button tablink" target="_blank" href="https://hajaulee.github.io/jaco/experience/create-pdf.html">Create book</a>
+                <a class="w3-bar-item w3-button tablink" target="_blank" href="https://github.com/hajaulee/jaco">Github</a>
+            </span>
         </div>
 
-        <div id="Viet" class="w3-container w3-border tab-content w3-animate-left">
-            <div class="center">
-                <textarea id="textInput" class="input-text" placeholder="Nhập văn bản ở đây!"></textarea>
-            </div>
+        <div class="input-section">
+            <textarea id="textInput" class="input-text" placeholder="Nhập văn bản ở đây!"></textarea>
         </div>
 
-        <div id="Jaco" class="w3-container w3-border tab-content w3-animate-right" style="display:none">
-            <div>
+        <div class="output-controls">
+            <label>
                 <input type="checkbox" id="useHantuCheckBox">
-                    <label for="useHantuCheckBox"> Dùng chữ Hán</label>
-                </input>
-                <select id="fontSelect">
-                    <option value="jaco-maru-font">jaco-maru-font</option>
-                    <option value="regular-font">regular-font</option>
-                </select>
-                <div id="textOutput" class="jaco-maru-font">Hello</div>
-            </div>
+                Dùng chữ Hán
+            </label>
+            <select id="fontSelect">
+                <option value="jaco-maru-font">Jaco Maru Font</option>
+                <option value="regular-font">Houf Regular Font</option>
+            </select>
         </div>
+        <div id="textOutput" class="jaco-maru-font">Hello</div>
     </div>
 
     <script>
-        function openTab(evt, tabName) {
-            var i, x, tablinks;
-            x = document.getElementsByClassName("tab-content");
-            for (i = 0; i < x.length; i++) {
-                x[i].style.display = "none";
-            }
-            tablinks = document.getElementsByClassName("tablink");
-            for (i = 0; i < x.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" w3-red", "");
-            }
-            document.getElementById(tabName).style.display = "block";
-            evt.currentTarget.className += " w3-red";
-        }
-    </script>
-    <script>
-
         const conveter = new Converter();
         const codeMapFetching = fetch("./extension/code_map.json").then(res => res.json());
         const hanvietFetching = fetch("./extension/hanviet_dict.json").then(res => res.json());
@@ -133,8 +217,8 @@
             convertInput();
         });
         fontSelect.addEventListener('change', () => {
-            textOutput.classList = fontSelect.value;
-        })
+            textOutput.className = fontSelect.value;
+        });
     </script>
 </body>
 
