@@ -754,7 +754,7 @@ class JacoKeyBoard {
             if (!this.backspaceTimer) {
                 this.backspaceTimer = setInterval(() => {
                     this.handleKey('Backspace');
-                }, 100);
+                }, 150);
             }
         } else if (['Comma', 'Period', 'Enter'].includes(key)) {
             this.addText({ Comma: ',', Period: '.', Enter: '\n' }[key]);
