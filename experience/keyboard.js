@@ -1017,7 +1017,7 @@ function addElement(html) {
         button.addEventListener('pointerup', (e) => {
             // e.preventDefault();
             // e.stopImmediatePropagation();
-            keyboard.handleKeyUp(e.target.id)
+            keyboard.handleKeyUp(e.target.id);
         })
     });
 
@@ -1056,6 +1056,10 @@ function addElement(html) {
                 e.stopImmediatePropagation();
             }
         }
+    });
+
+    window.addEventListener('keydown', (e) => {
+        keyboard.handleKeyUp(e.code);
     });
 
     window.addEventListener('pointerdown', (e) => {
