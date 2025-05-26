@@ -1058,7 +1058,7 @@ function addElement(html) {
         }
     });
 
-    window.addEventListener('keydown', (e) => {
+    window.addEventListener('keyup', (e) => {
         keyboard.handleKeyUp(e.code);
     });
 
