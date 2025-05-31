@@ -136,6 +136,9 @@
             if (['c', 't', 'p', 'ch'].includes(parts[2]) && !tone) {
                 tone = 's';
             }
+            if (['i', 'e'].includes(parts[1][0]) && parts[0] == 'c') {
+                parts[0] = 'k';
+            }
 
             // Ghép lại các phần còn lại thành chuỗi cơ bản
             let text = parts.slice(0, 3).join('');
@@ -148,6 +151,8 @@
                 .replace(/dd/g, 'đ')
                 .replace(/oo/g, 'ô')
                 .replace(/ow/g, 'ơ')
+                .replace(/uiee/g, 'uyê')
+                .replace(/qui/g, 'quy')
                 .replace(/ee/g, 'ê')
                 .replace(/uw/g, 'ư')
                 .replace(/-/g, '');
