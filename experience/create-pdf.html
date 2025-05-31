@@ -18,6 +18,11 @@
         }
 
         @font-face {
+            font-family: "HoufFaze";
+            src: url("https://hajaulee.github.io/Houf-Jaco-Faze/new_fonts/ttf/HoufFaze.ttf");
+        }
+
+        @font-face {
             font-family: "sanjikaishu";
             src: url("./fonts/SanJiKaiShu-2.ttf");
         }
@@ -33,6 +38,10 @@
 
         .regular-font {
             font-family: 'HoufRegular', 'sanjikaishu', Courier, monospace !important;
+        }
+
+        .faze-font {
+            font-family: 'HoufFaze', 'bianyakai', Courier, monospace !important;
         }
 
         .input-text {
@@ -151,6 +160,7 @@
                 <select id="fontSelect">
                     <option value="jaco-maru-font">jaco-maru-font</option>
                     <option value="regular-font">regular-font</option>
+                    <option value="faze-font">faze-font</option>
                 </select>
                 <button id="pdfExportBtn" onclick="window.print();">Print</button>
                 <div id="textOutput" class="jaco-maru-font">Hello</div>

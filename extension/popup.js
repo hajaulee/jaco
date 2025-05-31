@@ -114,7 +114,7 @@ readStorage(KEY_USE_HANVIET).then(result => {
   el('useHanviet').checked = result == 'true';
 });
 readStorage(KEY_JACO_FONT).then(result => {
-  el('fontSelection').value = result || "maru";
+  el('fontSelection').value = [...el('fontSelection').children].map(it => it.value).includes(result) ? result : "maru";
   updateFont();
 });
 
@@ -155,6 +155,6 @@ el('useHanviet').addEventListener('change', () => {
 });
 
 el("fontSelection").addEventListener('change', (event) => {
-  const font = event.target.value;
+  const font = event.target.value || "maru";
   saveStorage(KEY_JACO_FONT, font)
 });

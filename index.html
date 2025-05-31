@@ -191,12 +191,21 @@
             src: url("https://hajaulee.github.io/Houf-Jaco-Regular-Script/new_fonts/ttf/HoufRegularScript-Light.ttf");
         }
 
+        @font-face {
+            font-family: "HoufFaze";
+            src: url("https://hajaulee.github.io/Houf-Jaco-Faze/new_fonts/ttf/HoufFaze.ttf");
+        }
+
         .jaco-maru-font {
             font-family: 'JacoMaru', Courier, monospace !important;
         }
 
         .regular-font {
             font-family: 'HoufRegular', Courier, monospace !important;
+        }
+
+        .faze-font {
+            font-family: 'HoufFaze', Courier, monospace !important;
         }
     </style>
     <script src="./extension/converter.js"></script>
@@ -225,6 +234,7 @@
             <select id="fontSelect">
                 <option value="jaco-maru-font">Jaco Maru Font</option>
                 <option value="regular-font">Houf Regular Font</option>
+                <option value="faze-font">Houf Faze Font</option>
             </select>
         </div>
         <div id="textOutput" class="jaco-maru-font">Hello</div>

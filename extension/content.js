@@ -18,7 +18,7 @@ const global = {
 
 const SUPPORTED_JACO_FONTS = [
   { 
-    code: "maru", 
+    code: "maru",
     name: "JacoMaru", 
     url: "https://hajaulee.github.io/Houf-Jaco-Maru/new_fonts/ttf/HoufJacoMaru-Light.ttf" 
   },
@@ -27,6 +27,11 @@ const SUPPORTED_JACO_FONTS = [
     name: "HoufRegular", 
     url: "https://hajaulee.github.io/Houf-Jaco-Regular-Script/new_fonts/ttf/HoufRegularScript-Light.ttf" 
   },
+  {
+    code: "faze",
+    name: "HoufFaze",
+    url: "https://hajaulee.github.io/Houf-Jaco-Faze/new_fonts/ttf/HoufFaze.ttf"
+  }
 ];
 /* 
 ***************************
