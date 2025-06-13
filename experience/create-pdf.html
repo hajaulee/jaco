@@ -211,7 +211,8 @@
         function toFullWidthString(s) {
             return s
                 .replace(new RegExp(Object.keys(fullWidthMap).join("|"), 'g'), mt => fullWidthMap[mt] || mt)
-                .replace(/[!-~]/g, fullwidthChar => String.fromCharCode(fullwidthChar.charCodeAt(0) + 0xfee0));
+                .replace(/[!-~]/g, fullwidthChar => String.fromCharCode(fullwidthChar.charCodeAt(0) + 0xfee0))
+                .replace(/＂([^＂]+)＂/g, '「$1」');;
         }
         function toHalfWidthString(s) {
             return s.replace(/[！-～]/g, halfwidthChar => String.fromCharCode(halfwidthChar.charCodeAt(0) - 0xfee0));
@@ -238,9 +239,11 @@
             return chunks;
         }
 
-        function chunkLine(array, size) {
-
-            array = Array.from(array);
+        function chunkLine(str, size) {
+            
+            // Remove all halfwidth space
+            str = str.replace(/ /g, '')
+            let array = Array.from(str);
             
             const chunks = [];
             const tagLengthMap = Object.keys(tagDict).reduce((dict, key) => {
