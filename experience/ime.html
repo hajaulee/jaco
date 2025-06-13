@@ -136,8 +136,14 @@
             if (['c', 't', 'p', 'ch'].includes(parts[2]) && !tone) {
                 tone = 's';
             }
-            if (['i', 'e'].includes(parts[1][0]) && parts[0] == 'c') {
-                parts[0] = 'k';
+            if (['i', 'e'].includes(parts[1][0])) {
+                if(parts[0] == 'c'){
+                    parts[0] = 'k';
+                } else if (parts[0] == 'g') {
+                    parts[0] = 'gh';
+                }  else if (parts[0] == 'ng') {
+                    parts[0] = 'ngh';
+                } 
             }
 
             // Ghép lại các phần còn lại thành chuỗi cơ bản
