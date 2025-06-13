@@ -212,7 +212,7 @@
             return s
                 .replace(new RegExp(Object.keys(fullWidthMap).join("|"), 'g'), mt => fullWidthMap[mt] || mt)
                 .replace(/[!-~]/g, fullwidthChar => String.fromCharCode(fullwidthChar.charCodeAt(0) + 0xfee0))
-                .replace(/＂([^＂]+)＂/g, '「$1」');;
+                .replace(/＂([^＂]+)＂/g, '「$1」');
         }
         function toHalfWidthString(s) {
             return s.replace(/[！-～]/g, halfwidthChar => String.fromCharCode(halfwidthChar.charCodeAt(0) - 0xfee0));
