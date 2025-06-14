@@ -283,6 +283,7 @@
                         <label for="useChuamCheckBox">Ghi chú âm</label>
                     </div>
                     <div class="control-item">
+                        <label for="fontSelect">Phông chữ</label>
                         <select id="fontSelect">
                             <option value="jaco-maru-font">Jaco Maru</option>
                             <option value="regular-font">Regular</option>
@@ -300,13 +301,14 @@
                         <input type="number" id="charInLine" value="35" min="1" max="100" />
                     </div>
                     <div class="control-item">
+                        <label for="writingMode">Hướng chữ</label>
                         <select id="writingMode">
                             <option value="vertical-rl" selected>Dọc, phải sang trái</option>
                             <option value="vertical-lr">Dọc, trái sang phải</option>
                             <option value="lr">Ngang, trái sang phải</option>
                         </select>
                     </div>
-                    <button id="pdfExportBtn" onclick="window.print();">In PDF</button>
+                    <button id="pdfExportBtn" onclick="window.print();">Xuất PDF</button>
                 </div>
             </div>
             <div id="textOutput" class="jaco-maru-font vertical-rl">Hello</div>
