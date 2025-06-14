@@ -77,6 +77,19 @@ class Converter {
     }
 
     convert(text, useHanviet) {
+
+        const cacheKey = `[line/${useHanviet}/${this.useChuam}]:${text}`;
+        if (this.cache[cacheKey]) {
+            return this.cache[cacheKey];
+        }
+
+        if (text.includes("\n")){
+            const lines = text.split("\n");
+            const convertedLines = lines.map(line => this.convert(line, useHanviet));
+            const convertedText = convertedLines.join("\n");
+            return convertedText;
+        }
+
         if (Object.keys(this.codeMap).length == 0){
             return text;
         }
@@ -124,7 +137,10 @@ class Converter {
             if (word != ' '){
                 previousConverted = currentConverted;
             }       
-        })
+        });
+
+        // Cache the converted text
+        this.cache[cacheKey] = convertedText;
         return convertedText;
     }
 

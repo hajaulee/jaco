@@ -82,15 +82,29 @@
             font-size: 56px;
         }
 
+        #textOutput.vertical-lr .page {
+            writing-mode: vertical-lr;
+            padding-left: 6em;
+        }
+
+        #textOutput.vertical-rl .page {
+            writing-mode: vertical-rl;
+            padding-right: 6em;
+        }
+
+        #textOutput.lr .page {
+            writing-mode: horizontal-tb;
+            padding-right: 3em;
+            padding-left: 6em;
+        }
+
         .page {
             width: 35em;
             height: 49em;
-            writing-mode: vertical-rl;
             border: 1px solid lightgrey;
             border-radius: 5px;
             padding: 1em;
             letter-spacing: 0.1rem;
-            padding-right: 6em;
             padding-top: 3em;
             position: relative;
         }
@@ -162,8 +176,23 @@
                     <option value="regular-font">regular-font</option>
                     <option value="faze-font">faze-font</option>
                 </select>
+                <span>
+                    <label for="lineInPage">Số dòng trong trang</label>
+                    <input type="number" id="lineInPage" value="16" min="1" max="100" />
+                </span>
+                <span>
+                    <label for="charInLine">Số ký tự trong dòng</label>
+                    <input type="number" id="charInLine" value="35" min="1" max="100" />
+                </span>
+                <span>
+                    <select id="writingMode">
+                        <option value="vertical-rl" selected>Dọc, phải sang trái</option>
+                        <option value="vertical-lr">Dọc, trái sang phải</option>
+                        <option value="lr">Ngang, trái sang phải</option>
+                    </select>
+                </span>
                 <button id="pdfExportBtn" onclick="window.print();">Print</button>
-                <div id="textOutput" class="jaco-maru-font">Hello</div>
+                <div id="textOutput" class="jaco-maru-font vertical-rl">Hello</div>
             </div>
         </div>
 
@@ -186,8 +215,6 @@
         }
     </script>
     <script>
-        const LINE_IN_PAGE = 16
-        const CHAR_IN_LINE = 35
         const fullWidthMap = {
             ",": "、",
             ".": "。"
@@ -200,6 +227,8 @@
         const tagDict = {
             "＜ｈ１＞": '<h1>',
             "＜／ｈ１＞": '</h1>',
+            "＜ｈ２＞": '<h2>',
+            "＜／ｈ２＞": '</h2>',
             "、 ": "、",
             "。 ": "。",
             [S_HANTU]: '<ruby>',
@@ -207,6 +236,9 @@
             [S_CHUAM]: "<rt>",
             [E_CHUAM]: "</rt>"
         };
+
+        let gLineInPage = 16;
+        let gCharInLine = 35;
 
         function toFullWidthString(s) {
             return s
@@ -374,21 +406,29 @@
         }
 
         function paging(s){
-            // Assume h1 get 2 lines.
-            s = s.replaceAll("＜／ｈ１＞", '＜／ｈ１＞\n\n\n\n\n\n');
+            // Assume h1 get 3 lines, h2 get 2 line.
+            s = s
+                .replaceAll("＜／ｈ１＞", '＜／ｈ１＞\n\n\n\n\n\n')
+                .replaceAll("＜／ｈ２＞", '＜／ｈ２＞\n\n\n\n')
             const lines = s.split("\n\n"); // Empty line in source as new line
             const cuttedLines = [];
             for (let line of lines){
                 line = unescapeHTML(line);
                 line = line.replace(/\n/g, ''); // Remove single line
-                let chunkedLines = chunkLine(line, CHAR_IN_LINE).map(chars => chars.join(''));
+                let chunkedLines = chunkLine(line, gCharInLine).map(chars => chars.join(''));
                 if (chunkedLines.length == 0){
                     chunkedLines = [line];
                 }
                 cuttedLines.push(...chunkedLines);
             }
-            // .replaceAll("＜／ｈ１＞<br><br>", "＜／ｈ１＞")
-            const pages = chunkArray(cuttedLines, LINE_IN_PAGE).map(lines => lines.join("<br>").replaceAll("＜／ｈ１＞<br><br>", "＜／ｈ１＞"));
+            
+            const pages = chunkArray(cuttedLines, gLineInPage).map(lines => lines
+                .map(line => line.trim())
+                .join("<br>")
+                .replaceAll("＜／ｈ１＞<br><br>", "＜／ｈ１＞")
+                .replaceAll("＜／ｈ２＞<br>", "＜／ｈ２＞")
+            );
+            
             return pages
         }
 
@@ -407,10 +447,15 @@
         const useHantuCheckBox = document.getElementById("useHantuCheckBox");
         const useChuamCheckBox = document.getElementById("useChuamCheckBox");
         const fontSelect = document.getElementById("fontSelect");
+        const lineInPageInput = document.getElementById("lineInPage");
+        const charInLineInput = document.getElementById("charInLine");
+        const writingModeSelect = document.getElementById("writingMode");
 
 
         async function convertInput() {
             localStorage.setItem('inputText', textInput.value);
+            // Load cache from sessionStorage
+            conveter.cache = JSON.parse(sessionStorage.getItem('jaco:cache') || '{}');
             conveter.useChuam = useChuamCheckBox.checked;
             const rawConvertedText = await conveter.convertAsync(textInput.value, useHantuCheckBox.checked);
             const convertedText = fixHalfwidth(toFullWidthString(rawConvertedText));
@@ -424,6 +469,9 @@
             }).join('');
             textOutput.innerHTML += `<img src="../../docs/rule-1.svg" style="width: 100%">`;
             textOutput.innerHTML += `<img src="../../docs/rule-2.svg" style="width: 100%">`;
+
+            // Save cache to sessionStorage
+            sessionStorage.setItem('jaco:cache', JSON.stringify(conveter.cache));
         }
 
         textInput.addEventListener('keyup', () => convertInput());
@@ -435,8 +483,23 @@
             convertInput();
         });
         fontSelect.addEventListener('change', () => {
-            textOutput.classList = fontSelect.value;
-        })
+            const selectedFont = fontSelect.value;
+            textOutput.classList.remove("jaco-maru-font", "regular-font", "faze-font");
+            textOutput.classList.add(selectedFont);
+        });
+        lineInPageInput.addEventListener('change', () => {
+            gLineInPage = parseInt(lineInPageInput.value);
+            convertInput();
+        });
+        charInLineInput.addEventListener('change', () => {
+            gCharInLine = parseInt(charInLineInput.value);
+            convertInput();
+        });
+        writingModeSelect.addEventListener('change', () => {
+            const mode = writingModeSelect.value;
+            textOutput.classList.remove("vertical-rl", "vertical-lr", "lr");
+            textOutput.classList.add(mode);
+        });
 
     </script>
 </body>
