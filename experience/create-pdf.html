@@ -585,8 +585,8 @@
                     .replace("$pageContent", fixPageContent(page))
                     .replace("$pageNum", index + startPage)
             }).join('');
-            textOutput.innerHTML += `<div><img src="../../docs/rule-1.svg" style="width: 35em;"></div>`;
-            textOutput.innerHTML += `<div><img src="../../docs/rule-2.svg" style="width: 35em;"></div>`;
+            textOutput.innerHTML += `<div><img src="../docs/rule-1.svg" style="width: 35em;"></div>`;
+            textOutput.innerHTML += `<div><img src="../docs/rule-2.svg" style="width: 35em;"></div>`;
 
             // Save cache to sessionStorage
             sessionStorage.setItem('jaco:cache', JSON.stringify(conveter.cache));
