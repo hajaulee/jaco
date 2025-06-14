@@ -7,6 +7,23 @@
     <title>Jaco</title>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --text-color: #1f2937;
+            --bg-color: #f3f4f6;
+            --input-bg: #ffffff;
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+        }
+
         @font-face {
             font-family: "JacoMaru";
             src: url("https://hajaulee.github.io/Houf-Jaco-Maru/new_fonts/ttf/HoufJacoMaru-Light.ttf");
@@ -45,33 +62,68 @@
         }
 
         .input-text {
-            outline: 0;
+            outline: none;
             width: 100%;
             min-height: 300px;
-            max-width: 600px;
-            height: calc(100% - 60px);
-            border-radius: 7px;
-            padding: 1em;
-            margin: 1em;
+            max-width: 800px;
+            height: calc(100vh - 200px);
+            border-radius: 12px;
+            padding: 1.5em;
+            margin: 1.5em auto;
             font-size: 16px;
+            border: 1px solid var(--border-color);
+            background: var(--input-bg);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .input-text:focus {
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+            border-color: var(--primary-color);
         }
 
         .center {
             display: flex;
             justify-content: center;
+            align-items: flex-start;
+            padding: 1rem;
         }
 
         .w3-bar {
             position: sticky;
             top: 0;
             z-index: 1;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            padding: 0.5rem 0;
         }
 
+        .w3-bar-item {
+            transition: background-color 0.3s ease;
+            border-radius: 6px;
+            margin: 0 4px;
+            color: #fff !important;
+        }
+
+        .w3-bar-item:hover {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .w3-bar-item.w3-red {
+            background-color: rgba(255, 255, 255, 0.2) !important;
+            color: #ff0 !important;
+        }
+        
         
         #textOutput {
             font-size: 24px;
             line-break: anywhere;
-            
+            margin: 0 auto;
+            width: fit-content;
+            /* display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center; */
+            min-height: calc(100vh - 300px);
         }
 
         #textOutput h1, h2, h3, h4, h5, h6 {
@@ -101,12 +153,14 @@
         .page {
             width: 35em;
             height: 49em;
-            border: 1px solid lightgrey;
-            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
             padding: 1em;
             letter-spacing: 0.1rem;
             padding-top: 3em;
             position: relative;
+            background: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         .pageNum {
@@ -125,6 +179,59 @@
             -ms-user-select: none;      /* IE/Edge */
         }
 
+        .controls-panel {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .control-group {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .control-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        select, input[type="number"] {
+            padding: 0.5rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: var(--input-bg);
+            min-width: 120px;
+            font-size: 14px;
+        }
+
+        input[type="checkbox"] {
+            width: 1.2rem;
+            height: 1.2rem;
+            border-radius: 4px;
+            accent-color: var(--primary-color);
+        }
+
+        button#pdfExportBtn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        button#pdfExportBtn:hover {
+            background-color: var(--secondary-color);
+        }
+
         @media print {
             body {
                 visibility: hidden;
@@ -138,6 +245,7 @@
 
             #textOutput .page{
                 border: none;
+                box-shadow: none;
             }
 
             #textOuput hr {
@@ -151,49 +259,57 @@
 
 <body>
     <div class="w3-container">
-        <div class="w3-bar w3-black">
+        <div class="w3-bar">
             <button class="w3-bar-item w3-button tablink w3-red" onclick="openTab(event,'Viet')">Tiếng Việt</button>
             <button class="w3-bar-item w3-button tablink" onclick="openTab(event,'Jaco')">Jaco</button>
-            <button class="w3-bar-item w3-button tablink"><a target="_blank" href="https://github.com/hajaulee/jaco">Github</a></button>
+            <button class="w3-bar-item w3-button tablink"><a style="color: white; text-decoration: none;" target="_blank" href="https://github.com/hajaulee/jaco">Github</a></button>
         </div>
 
-        <div id="Viet" class="w3-container w3-border tab-content w3-animate-left">
+        <div id="Viet" class="w3-container tab-content w3-animate-left">
             <div class="center">
                 <textarea id="textInput" class="input-text" placeholder="Nhập văn bản ở đây!"></textarea>
             </div>
         </div>
 
-        <div id="Jaco" class="w3-container w3-border tab-content w3-animate-right" style="display:none">
-            <div>
-                <input type="checkbox" id="useHantuCheckBox">
-                    <label for="useHantuCheckBox"> Dùng chữ Hán</label>
-                </input>
-                <input type="checkbox" id="useChuamCheckBox">
-                    <label for="useChuamCheckBox"> Ghi chú âm</label>
-                </input>
-                <select id="fontSelect">
-                    <option value="jaco-maru-font">jaco-maru-font</option>
-                    <option value="regular-font">regular-font</option>
-                    <option value="faze-font">faze-font</option>
-                </select>
-                <span>
-                    <label for="lineInPage">Số dòng trong trang</label>
-                    <input type="number" id="lineInPage" value="16" min="1" max="100" />
-                </span>
-                <span>
-                    <label for="charInLine">Số ký tự trong dòng</label>
-                    <input type="number" id="charInLine" value="35" min="1" max="100" />
-                </span>
-                <span>
-                    <select id="writingMode">
-                        <option value="vertical-rl" selected>Dọc, phải sang trái</option>
-                        <option value="vertical-lr">Dọc, trái sang phải</option>
-                        <option value="lr">Ngang, trái sang phải</option>
-                    </select>
-                </span>
-                <button id="pdfExportBtn" onclick="window.print();">Print</button>
-                <div id="textOutput" class="jaco-maru-font vertical-rl">Hello</div>
+        <div id="Jaco" class="w3-container tab-content w3-animate-right" style="display:none">
+            <div class="controls-panel">
+                <div class="control-group">
+                    <div class="control-item">
+                        <input type="checkbox" id="useHantuCheckBox">
+                        <label for="useHantuCheckBox">Dùng chữ Hán</label>
+                    </div>
+                    <div class="control-item">
+                        <input type="checkbox" id="useChuamCheckBox">
+                        <label for="useChuamCheckBox">Ghi chú âm</label>
+                    </div>
+                    <div class="control-item">
+                        <select id="fontSelect">
+                            <option value="jaco-maru-font">Jaco Maru</option>
+                            <option value="regular-font">Regular</option>
+                            <option value="faze-font">Faze</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="control-item">
+                        <label for="lineInPage">Số dòng trong trang</label>
+                        <input type="number" id="lineInPage" value="16" min="1" max="100" />
+                    </div>
+                    <div class="control-item">
+                        <label for="charInLine">Số ký tự trong dòng</label>
+                        <input type="number" id="charInLine" value="35" min="1" max="100" />
+                    </div>
+                    <div class="control-item">
+                        <select id="writingMode">
+                            <option value="vertical-rl" selected>Dọc, phải sang trái</option>
+                            <option value="vertical-lr">Dọc, trái sang phải</option>
+                            <option value="lr">Ngang, trái sang phải</option>
+                        </select>
+                    </div>
+                    <button id="pdfExportBtn" onclick="window.print();">In PDF</button>
+                </div>
             </div>
+            <div id="textOutput" class="jaco-maru-font vertical-rl">Hello</div>
         </div>
 
         <div id="htmlUnescaper" style="display: none;"></div>
@@ -467,8 +583,8 @@
                     .replace("$pageContent", fixPageContent(page))
                     .replace("$pageNum", index + startPage)
             }).join('');
-            textOutput.innerHTML += `<img src="../../docs/rule-1.svg" style="width: 100%">`;
-            textOutput.innerHTML += `<img src="../../docs/rule-2.svg" style="width: 100%">`;
+            textOutput.innerHTML += `<div><img src="../../docs/rule-1.svg" style="width: 35em;"></div>`;
+            textOutput.innerHTML += `<div><img src="../../docs/rule-2.svg" style="width: 35em;"></div>`;
 
             // Save cache to sessionStorage
             sessionStorage.setItem('jaco:cache', JSON.stringify(conveter.cache));
