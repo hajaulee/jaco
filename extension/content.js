@@ -14,25 +14,26 @@ const global = {
   useHanviet: true,
   autoTranslation: false,
   loadedFonts: {},
+  supportedFonts: []
 };
 
-const SUPPORTED_JACO_FONTS = [
-  { 
-    code: "maru",
-    name: "JacoMaru", 
-    url: "https://hajaulee.github.io/Houf-Jaco-Maru/new_fonts/ttf/HoufJacoMaru-Light.ttf" 
-  },
-  { 
-    code: "regular", 
-    name: "HoufRegular", 
-    url: "https://hajaulee.github.io/Houf-Jaco-Regular-Script/new_fonts/ttf/HoufRegularScript-Light.ttf" 
-  },
-  {
-    code: "faze",
-    name: "HoufFaze",
-    url: "https://hajaulee.github.io/Houf-Jaco-Faze/new_fonts/ttf/HoufFaze.ttf"
-  }
-];
+// const SUPPORTED_JACO_FONTS = [
+//   { 
+//     code: "maru",
+//     name: "JacoMaru", 
+//     url: "https://hajaulee.github.io/Houf-Jaco-Maru/new_fonts/ttf/HoufJacoMaru-Light.ttf" 
+//   },
+//   { 
+//     code: "regular", 
+//     name: "HoufRegular", 
+//     url: "https://hajaulee.github.io/Houf-Jaco-Regular-Script/new_fonts/ttf/HoufRegularScript-Light.ttf" 
+//   },
+//   {
+//     code: "faze",
+//     name: "HoufFaze",
+//     url: "https://hajaulee.github.io/Houf-Jaco-Faze/new_fonts/ttf/HoufFaze.ttf"
+//   }
+// ];
 /* 
 ***************************
 *   FUNCTION
@@ -64,15 +65,29 @@ async function readStorage(key) {
   })
 }
 
+async function fetchSupportedFonts() {
+  if (global.supportedFonts.length > 0) {
+    return global.supportedFonts;
+  }
+  return fetch('https://hajaulee.github.io/jaco/extension/supported_fonts.json')
+    .then(res => res.json())
+    .then(data => {
+      global.supportedFonts = data;
+      return data;
+    });
+}
+
 async function readFontData() {
-  const data =  await urlContentToDataUri(SUPPORTED_JACO_FONTS.find(f => f.code === global.jacoFont).url);
+  await fetchSupportedFonts();
+  const data =  await urlContentToDataUri(global.supportedFonts.find(f => f.code === global.jacoFont).url);
   global.loadedFonts[global.jacoFont] = data;
   global.fontDownloaded = true;
   return data;
 }
 
-function setupFontFamily(uriData) {
-  const fontInfo = SUPPORTED_JACO_FONTS.find(f => f.code === global.jacoFont);
+async function setupFontFamily(uriData) {
+  await fetchSupportedFonts();
+  const fontInfo = global.supportedFonts.find(f => f.code === global.jacoFont);
   if (!fontInfo) {
     console.error(`Font ${global.jacoFont} is not supported.`);
     return;
@@ -82,7 +97,10 @@ function setupFontFamily(uriData) {
     @font-face {
         font-family: ${fontInfo.name};
         src: url("${uriData}");
-    }  
+    }
+    .jaco-text.jaco-font-${fontInfo.code} {
+        font-family: ${fontInfo.name}, Arial, Verdana, sans-serif !important;
+    }
   `));
   document.head.appendChild(newStyle);  
 }

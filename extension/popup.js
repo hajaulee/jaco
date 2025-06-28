@@ -4,6 +4,14 @@ const KEY_USE_HANVIET = "UseHanViet";
 const KEY_JACO_FONT= "JacoFont";
 const activeTabFilter = { active: true, currentWindow: true };
 
+const global = {
+  fontDownloaded: false,
+  translatorExecuted: false,
+  useHanviet: true,
+  autoTranslation: false,
+  loadedFonts: {},
+  supportedFonts: []
+};
 const el = (elId) => document.getElementById(elId);
 const extractHost = url => url.split("/")[2];
 
@@ -52,9 +60,35 @@ async function saveStorage(key, data) {
   });
 }
 
+function addFontFace(fontCode, fontName, fontUrl) {
+  const style = document.createElement('style');
+  style.textContent = `
+    @font-face {
+      font-family: '${fontName}';
+      src: url('${fontUrl}');
+    }
+    .jaco-font-${fontCode} {
+        font-family: ${fontName}, Arial, Verdana, sans-serif !important;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
 function updateFont() {
       const font = el("fontSelection").value;
       const textOutput = el('textOutput');
+
+      if (global.supportedFonts?.length > 0) {
+        const fontInfo = global.supportedFonts.find(f => f.code === font);
+        if (fontInfo) {
+            // Add font face if not already added
+            if (!global.loadedFonts[fontInfo.code]) {
+              addFontFace(fontInfo.code, fontInfo.name, fontInfo.url);
+              global.loadedFonts[fontInfo.code] = true;
+            }
+        }
+      }
+
       // Remove current jaco-font-* class
       textOutput.classList.remove(...[...textOutput.classList].filter(c => c.startsWith('jaco-font-')));
       // Add selected jaco-font-x class
@@ -121,6 +155,31 @@ readStorage(KEY_JACO_FONT).then(result => {
 
 withCurrentTab((tab) => {
   chrome.runtime.sendMessage({ action: "injectContentScript", tab: tab });
+});
+
+fetch("https://hajaulee.github.io/jaco/extension/supported_fonts.json").then(res => res.json()).then(data => {
+  global.supportedFonts = data;
+  const fontSelection = el('fontSelection');
+  data.forEach(font => {
+    const option = document.createElement('option');
+    option.value = font.code;
+    option.textContent = font.name;
+    if (font.code === "maru") {
+      option.selected = true;
+    }
+    fontSelection.appendChild(option);
+  });
+  updateFont();
+  readStorage(KEY_JACO_FONT).then(font => {
+    if (font && data.includes(font)) {
+      el('fontSelection').value = font;
+    } else {
+      el('fontSelection').value = "maru";
+    }
+    updateFont();
+  });
+}).catch(err => {
+  console.error("Failed to fetch supported fonts:", err);
 });
 
 
