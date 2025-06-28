@@ -40,6 +40,11 @@
         }
 
         @font-face {
+            font-family: "HoufNoto";
+            src: url("https://hajaulee.github.io/Houf-Jaco-Noto/new_fonts/ttf/HoufNoto-Regular.ttf");
+        }
+
+        @font-face {
             font-family: "sanjikaishu";
             src: url("./fonts/SanJiKaiShu-2.ttf");
         }
@@ -59,6 +64,10 @@
 
         .faze-font {
             font-family: 'HoufFaze', 'bianyakai', Courier, monospace !important;
+        }
+
+        .noto-font {
+            font-family: 'HoufNoto', Courier, monospace !important;
         }
 
         .input-text {
@@ -288,6 +297,7 @@
                             <option value="jaco-maru-font">Jaco Maru</option>
                             <option value="regular-font">Regular</option>
                             <option value="faze-font">Faze</option>
+                            <option value="noto-font">Noto</option>
                         </select>
                     </div>
                 </div>
@@ -602,7 +612,7 @@
         });
         fontSelect.addEventListener('change', () => {
             const selectedFont = fontSelect.value;
-            textOutput.classList.remove("jaco-maru-font", "regular-font", "faze-font");
+            textOutput.classList.remove("jaco-maru-font", "regular-font", "faze-font", "noto-font");
             textOutput.classList.add(selectedFont);
         });
         lineInPageInput.addEventListener('change', () => {
