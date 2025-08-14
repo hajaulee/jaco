@@ -20,8 +20,14 @@
 
 ## Ví dụ
 
+### Tuyên ngôn độc lập
 ![image](https://github.com/user-attachments/assets/0a8878e8-393e-4781-9955-7c0d8175bab7)
 
+### Truyện kiều
+<p>
+<img width="416" alt="image" src="https://github.com/user-attachments/assets/ca37a9f5-17e5-4bb8-9e44-e136024fe142" />
+<img width="385" alt="image" src="https://github.com/user-attachments/assets/85e2bc77-da18-404e-a8b2-6b2ff93ae12a" />
+</p>
 
 
 ## Tham khảo 
