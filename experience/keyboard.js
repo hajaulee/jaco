@@ -335,7 +335,7 @@ class JacoKeyBoardVaState {
     cssClass = 'va-btn';
     layout = {
         "Q": "11_ai.svg",
-        "W": "12_aa.svg",
+        "W": "11_aay.svg",
         "E": "11_e.svg",
         "R": "11_ow_fix.svg",
         "T": "11_ee.svg",
@@ -356,7 +356,7 @@ class JacoKeyBoardVaState {
         "L": "11_ooi.svg",
 
         "Z": "11_aau.svg",
-        "X": "11_uwi.svg",
+        "X": "12_aa.svg",
         "C": "11_uwowi.svg",
         "V": "11_ua.svg",
         "B": "11_ui.svg",
@@ -388,7 +388,7 @@ class JacoKeyBoardVaShiftState {
         "P": "11_owi.svg",
 
         "A": "11_a.svg",
-        "S": "11_aay.svg",
+        "S": "11_uwu.svg",
         "D": "11_uaay.svg",
         "F": "11_uya.svg",
         "G": "11_uwa.svg",
@@ -398,7 +398,7 @@ class JacoKeyBoardVaShiftState {
         "L": "12_oaw.svg",
 
         "Z": "11_ay.svg",
-        "X": "11_uwu.svg",
+        "X": "11_uwi.svg",
         "C": "11_uyu.svg",
         "V": "11_uooi.svg",
         "B": "11_iu.svg",
