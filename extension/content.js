@@ -14,7 +14,9 @@ const global = {
   useHanviet: true,
   autoTranslation: false,
   loadedFonts: {},
-  supportedFonts: []
+  supportedFonts: [],
+  jacoFont: "",
+  jacoDefaultFont: "noto"
 };
 
 // const SUPPORTED_JACO_FONTS = [
@@ -52,14 +54,14 @@ async function urlContentToDataUri(url) {
 }
 
 
-async function readStorage(key) {
+async function readStorage(key, defaultValue = null) {
   return new Promise((resolve, reject) => {
     chrome.runtime.sendMessage({ action: "readStorage", key: key, url: getHost() }, response => {
       if (response) {
-        resolve(response.result);
+        resolve(response.result ?? defaultValue);
       }
       else {
-        reject(response);
+        resolve(defaultValue);
       }
     });
   })
@@ -169,6 +171,7 @@ async function init() {
   
   global.useHanviet = useHanviet == 'true';
   global.autoTranslation = autoTranslation == 'true';
+  global.jacoFont = await readStorage(KEY_JACO_FONT, global.jacoDefaultFont);
   await conveter.updateResources(codeMap, hanviet);
 
   if (global.autoTranslation) {
@@ -181,9 +184,8 @@ async function init() {
 async function processRequest(request, sender, sendResponse) {
   if (request.action === "startTranslation") {
     const useHanviet = await readStorage(KEY_USE_HANVIET);
-    const jacoFont = await readStorage(KEY_JACO_FONT);
     global.useHanviet = useHanviet == 'true';
-    global.jacoFont = jacoFont ?? "maru";
+    global.jacoFont = await readStorage(KEY_JACO_FONT, global.jacoDefaultFont);
     
     if (!global.loadedFonts[global.jacoFont]) {
       readFontData().then(fontData => setupFontFamily(fontData));

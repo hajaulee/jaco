@@ -98,24 +98,24 @@ function updateFont() {
   }
 
 function initConverterDemo(){
-  const conveter = new Converter();
+  const converter = new Converter();
   const codeMapFetching = fetch("./code_map.json").then(res => res.json());
   const hanvietFetching = fetch("./hanviet_dict.json").then(res => res.json());
   Promise.all([codeMapFetching, hanvietFetching]).then(values => {
-      conveter.updateResources(values[0], values[1]);
+      converter.updateResources(values[0], values[1]);
   });
   const textInput = document.getElementById('textInput');
   const textOutput = document.getElementById('textOutput');
   const fontSelection = document.getElementById('fontSelection');
 
   function convertInput() {
-      textOutput.innerHTML = conveter.convert(textInput.innerText, useHanviet.checked).trim().replace(/\n/g, '<br>');
+      textOutput.innerHTML = converter.convert(textInput.innerText, useHanviet.checked).trim().replace(/\n/g, '<br>');
   }
 
   textInput.addEventListener('keyup', () => convertInput());
   textInput.addEventListener('change', () => convertInput());
   useHanviet.addEventListener('change', () => convertInput());
-  conveter.ready.then(() => {
+  converter.ready.then(() => {
       convertInput();
   });
 
@@ -171,7 +171,7 @@ fetch("https://hajaulee.github.io/jaco/extension/supported_fonts.json").then(res
   });
   updateFont();
   readStorage(KEY_JACO_FONT).then(font => {
-    if (font && data.includes(font)) {
+    if (font && data.some(fontInfo.code == font)) {
       el('fontSelection').value = font;
     } else {
       el('fontSelection').value = "maru";
