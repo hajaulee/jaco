@@ -59,7 +59,6 @@ cán    幹    cán sự, cán bộ
 cáo    告    báo cáo, thông cáo
 các    各    các
 cân    斤    cân (kilo), cái rìu
-câu    拘    câu thúc
 cúc    菊    hoa cúc
 căn    根    gốc, căn bản, căn cứ
 cương    剛    cứng
@@ -380,7 +379,7 @@ si    痴    ngu si
 siêu    超    siêu việt, siêu thị, siêu nhân
 soái    帥    tướng soái
 sung    充    sung túc, bổ sung
-suy    衰    suy thoái
+sinh    生    sinh
 suất    率    thống suất, xác suất, tỉ lệ suất
 sùng    崇    tôn sùng, sùng bái
 súng    銃    khấu súng
