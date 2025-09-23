@@ -149,6 +149,8 @@
             // Ghép lại các phần còn lại thành chuỗi cơ bản
             let text = parts.slice(0, 3).join('');
 
+            text = text + "$"; // Thêm ký tự kết thúc để dễ xử lý
+
             // Bước 2: Xử lý biến đổi nguyên âm theo telex.
             // Ví dụ: "aa" -> "â", "aw" -> "ă", "dd" -> "đ", "oo" -> "ô", "ow" -> "ơ", "uw" -> "ư"
             text = text.replace(/aa/g, 'â')
@@ -159,6 +161,8 @@
                 .replace(/ow/g, 'ơ')
                 .replace(/uiee/g, 'uyê')
                 .replace(/qui/g, 'quy')
+                .replace(/li\$/g, 'ly$')
+                .replace(/ki\$/g, 'ky$')
                 .replace(/ee/g, 'ê')
                 .replace(/uw/g, 'ư')
                 .replace(/-/g, '');
@@ -169,6 +173,8 @@
             if (text == 'i') {
                 text = 'y'
             }
+
+            text = text.slice(0, -1); // Loại bỏ ký tự kết thúc
 
             // Bước 3: Áp dụng ký hiệu dấu vào nguyên âm được chọn.
             // Mapping các dấu cho các nguyên âm.
