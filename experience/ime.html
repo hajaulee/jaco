@@ -221,7 +221,7 @@
 
                 // Nếu không phải nguyên âm đặc biệt thì xử lý bình thường
                 if (!toneHandled) {
-                    const vowels = 'aăâeêoôơuưiy';
+                    const vowels = 'aăâeêoôơưuiy';
                     const chars = [...text];
                     for (let i = 0; i < vowels.length; i++) {
                         let index = chars.indexOf(vowels[i]);
