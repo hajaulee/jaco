@@ -167,6 +167,8 @@
                 .replace(/uw/g, 'ư')
                 .replace(/-/g, '');
 
+            text = text.slice(0, -1); // Loại bỏ ký tự kết thúc
+            
             if (text.startsWith('iê')) {
                 text = 'yê' + text.slice(2);
             }
@@ -174,7 +176,6 @@
                 text = 'y'
             }
 
-            text = text.slice(0, -1); // Loại bỏ ký tự kết thúc
 
             // Bước 3: Áp dụng ký hiệu dấu vào nguyên âm được chọn.
             // Mapping các dấu cho các nguyên âm.
