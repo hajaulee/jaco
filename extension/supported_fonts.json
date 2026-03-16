@@ -15,6 +15,11 @@
     "url": "https://hajaulee.github.io/Houf-Jaco-Faze/new_fonts/ttf/HoufFaze.ttf"
   },
   {
+    "code": "faze2",
+    "name": "HoufFaze2",
+    "url": "https://hajaulee.github.io/jaco/fonts/HoufFaze2.ttf"
+  },
+  {
     "code": "noto",
     "name": "HoufNoto",
     "url": "https://hajaulee.github.io/Houf-Jaco-Noto/new_fonts/ttf/HoufNoto-Regular.ttf"
