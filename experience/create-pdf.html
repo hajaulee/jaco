@@ -22,6 +22,7 @@
             font-family: system-ui, -apple-system, sans-serif;
             margin: 0;
             min-height: 100vh;
+            font-size: 24px;
         }
 
         @font-face {
@@ -86,9 +87,9 @@
             max-width: 800px;
             height: calc(100vh - 200px);
             border-radius: 12px;
-            padding: 1.5em;
-            margin: 1.5em auto;
-            font-size: 16px;
+            padding: 1.5rem;
+            margin: 1.5rem auto;
+            font-size: 24px;
             border: 1px solid var(--border-color);
             background: var(--input-bg);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -154,28 +155,28 @@
 
         #textOutput.vertical-lr .page {
             writing-mode: vertical-lr;
-            padding-left: 6em;
+            padding-left: 6rem;
         }
 
         #textOutput.vertical-rl .page {
             writing-mode: vertical-rl;
-            padding-right: 6em;
+            padding-right: 6rem;
         }
 
         #textOutput.lr .page {
             writing-mode: horizontal-tb;
-            padding-right: 3em;
-            padding-left: 6em;
+            padding-right: 3rem;
+            padding-left: 6rem;
         }
 
         .page {
-            width: 35em;
-            height: 49em;
+            width: 35rem;
+            height: 49rem;
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 1em;
+            padding: 1rem;
             letter-spacing: 0.1rem;
-            padding-top: 3em;
+            padding-top: 3rem;
             position: relative;
             background: white;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -225,7 +226,7 @@
             border: 1px solid var(--border-color);
             background: var(--input-bg);
             min-width: 120px;
-            font-size: 14px;
+            font-size: 24px;
         }
 
         input[type="checkbox"] {
@@ -251,9 +252,16 @@
         }
 
         @media print {
+            @page {
+                size: A5;
+                margin: 0;
+            }
+
             body {
                 visibility: hidden;
+                margin: 0;
             }
+
             #textOutput {
                 visibility: visible;
                 position: absolute;
@@ -262,8 +270,12 @@
             }
 
             #textOutput .page{
-                border: none;
+                border: black solid 1px;
+                /* border: none; */
                 box-shadow: none;
+                width: 148mm;
+                height: 210mm;
+                box-sizing: border-box;
             }
 
             #textOuput hr {
@@ -319,6 +331,10 @@
                     <div class="control-item">
                         <label for="charInLine">Số ký tự trong dòng</label>
                         <input type="number" id="charInLine" value="35" min="1" max="100" />
+                    </div>
+                    <div class="control-item">
+                        <label for="fontSizeInput">Cỡ chữ</label>
+                        <input type="number" id="fontSizeInput" value="24" min="8" max="200" />
                     </div>
                     <div class="control-item">
                         <label for="writingMode">Hướng chữ</label>
@@ -377,6 +393,7 @@
 
         let gLineInPage = 16;
         let gCharInLine = 35;
+        let gFontSize = 24;
 
         function toFullWidthString(s) {
             return s
@@ -587,8 +604,12 @@
         const fontSelect = document.getElementById("fontSelect");
         const lineInPageInput = document.getElementById("lineInPage");
         const charInLineInput = document.getElementById("charInLine");
+        const fontSizeInput = document.getElementById("fontSizeInput");
         const writingModeSelect = document.getElementById("writingMode");
 
+        function updateFontSize() {
+            textOutput.style.fontSize = `${gFontSize}px`;
+        }
 
         async function convertInput() {
             localStorage.setItem('inputText', textInput.value);
@@ -605,8 +626,8 @@
                     .replace("$pageContent", fixPageContent(page))
                     .replace("$pageNum", index + startPage)
             }).join('');
-            textOutput.innerHTML += `<div><img src="../docs/rule-1.svg" style="width: 35em;"></div>`;
-            textOutput.innerHTML += `<div><img src="../docs/rule-2.svg" style="width: 35em;"></div>`;
+            textOutput.innerHTML += `<div><img src="../docs/rule-1.svg" style="width: 35rem;"></div>`;
+            textOutput.innerHTML += `<div><img src="../docs/rule-2.svg" style="width: 35rem;"></div>`;
 
             // Save cache to sessionStorage
             sessionStorage.setItem('jaco:cache', JSON.stringify(conveter.cache));
@@ -618,6 +639,7 @@
         useChuamCheckBox.addEventListener('change', () => convertInput());
         conveter.ready.then(() => {
             textInput.value = localStorage.getItem('inputText') || 'Xin chào 越南 from Z。'
+            updateFontSize();
             convertInput();
         });
         fontSelect.addEventListener('change', () => {
@@ -632,6 +654,10 @@
         charInLineInput.addEventListener('change', () => {
             gCharInLine = parseInt(charInLineInput.value);
             convertInput();
+        });
+        fontSizeInput.addEventListener('change', () => {
+            gFontSize = parseInt(fontSizeInput.value) || 24;
+            updateFontSize();
         });
         writingModeSelect.addEventListener('change', () => {
             const mode = writingModeSelect.value;
