@@ -197,13 +197,18 @@
         }
 
         @font-face {
+            font-family: "HoufNoto";
+            src: url("https://hajaulee.github.io/Houf-Jaco-Noto/new_fonts/ttf/HoufNoto-Regular.ttf");
+        }
+
+        @font-face {
             font-family: "HoufFaze2";
             src: url("https://hajaulee.github.io/jaco/fonts/HoufFaze2.ttf");
         }
 
         @font-face {
-            font-family: "HoufNoto";
-            src: url("https://hajaulee.github.io/Houf-Jaco-Noto/new_fonts/ttf/HoufNoto-Regular.ttf");
+            font-family: "HoufNoto2";
+            src: url("https://hajaulee.github.io/jaco/fonts/HoufNoto2.ttf");
         }
 
         .jaco-maru-font {
@@ -218,12 +223,16 @@
             font-family: 'HoufFaze', Courier, monospace !important;
         }
 
+        .noto-font {
+            font-family: 'HoufNoto', Courier, monospace !important;
+        }
+
         .faze2-font {
             font-family: 'HoufFaze2', Courier, monospace !important;
         }
 
-        .noto-font {
-            font-family: 'HoufNoto', Courier, monospace !important;
+         .noto2-font {
+            font-family: 'HoufNoto2', Courier, monospace !important;
         }
     </style>
     <script src="./extension/converter.js"></script>
@@ -255,6 +264,7 @@
                 <option value="faze-font">Houf Faze Font</option>
                 <option value="noto-font">Houf Noto Font</option>
                 <option value="faze2-font">Houf Faze2 Font</option>
+                <option value="noto2-font">Houf Noto2 Font</option>
             </select>
         </div>
         <div id="textOutput" class="jaco-maru-font">Hello</div>
