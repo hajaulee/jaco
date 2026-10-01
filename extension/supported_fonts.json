@@ -28,5 +28,10 @@
     "code": "noto2",
     "name": "HoufNoto2",
     "url": "https://hajaulee.github.io/jaco/fonts/HoufNoto2.ttf"
+  },
+  {
+    "code": "regu3",
+    "name": "HoufRegu3",
+    "url": "https://hajaulee.github.io/jaco/fonts/HoufRegularScript-Jaco3-Light.ttf"
   }
 ]
