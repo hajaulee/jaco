@@ -33,5 +33,10 @@
     "code": "regu3",
     "name": "HoufRegu3",
     "url": "https://hajaulee.github.io/jaco/fonts/HoufRegularScript-Jaco3-Light.ttf"
+  },
+  {
+    "code": "noto3",
+    "name": "HoufNoto3",
+    "url": "https://hajaulee.github.io/jaco/fonts/HoufNoto3.ttf"
   }
 ]
